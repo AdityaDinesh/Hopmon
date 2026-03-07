@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3208721023704086671}
   - component: {fileID: 3721038421004855352}
   - component: {fileID: 1032283696046950408}
-  - component: {fileID: 5694162791386159571}
+  - component: {fileID: 2000860555632174209}
   m_Layer: 0
   m_Name: Blue Tile
   m_TagString: Untagged
@@ -331,8 +331,8 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6684287209117004250}
   m_Mesh: {fileID: 0}
---- !u!64 &5694162791386159571
-MeshCollider:
+--- !u!65 &2000860555632174209
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -349,7 +349,6 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
+  serializedVersion: 3
+  m_Size: {x: 4, y: 0.34954762, z: 4}
+  m_Center: {x: 0.009609461, y: 0.1747737, z: -0.0072472095}
