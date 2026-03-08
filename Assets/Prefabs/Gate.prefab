@@ -24224,9 +24224,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8584254826909403078}
   - component: {fileID: 8170882823963490409}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Gate
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

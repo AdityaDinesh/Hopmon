@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 6699135793475689555}
   - component: {fileID: 3116508605716694499}
   - component: {fileID: 229972254129801530}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Green Pillar
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
