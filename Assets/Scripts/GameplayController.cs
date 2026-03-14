@@ -6,15 +6,15 @@ public class GameplayController : MonoBehaviour
 {
     public static GameplayController Instance;
 
-    public enum CameraFacingDirection
-    {
-        North,
-        South,
-        West,
-        East
-    }
+    //public enum CameraFacingDirection
+    //{
+    //    North,
+    //    South,
+    //    West,
+    //    East
+    //}
 
-    private CameraFacingDirection _currentCameraFacingDirection = CameraFacingDirection.North;
+    //private CameraFacingDirection _currentCameraFacingDirection = CameraFacingDirection.North;
 
     private void Awake()
     {

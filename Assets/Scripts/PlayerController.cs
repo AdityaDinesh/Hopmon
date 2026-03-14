@@ -16,6 +16,10 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 _lastMoveDirection = Vector3.zero;
 
+    public Transform PlayerTransform
+    {
+        get { return _transform; }
+    }
     private Transform _transform;
     private Animator _animator;
     private bool _isMoving;
@@ -56,8 +60,6 @@ public class PlayerController : MonoBehaviour
         {
             _moveTimer += Time.deltaTime;
             _transform.position += move.normalized * _speed * Time.deltaTime;
-
-            Debug.Log("Move Timer : " + _moveTimer);
 
             if (_moveTimer > _maxMoveTime)
             {
@@ -151,7 +153,6 @@ public class PlayerController : MonoBehaviour
 
         if (!wallAhead)
         {
-            Debug.Log("Wall Detected");
             _isMoving = true;
             _moveTimer = 0f;
             _animator.SetTrigger("jump");
