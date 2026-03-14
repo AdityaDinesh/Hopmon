@@ -13,6 +13,10 @@ public class CameraController : MonoBehaviour
 
     private Transform _playerTransform;
 
+    public bool IsMoving
+    {
+        get { return _isMoving; }
+    }
     private bool _isMoving;
     private bool _isInMovingCooldown;
 
@@ -47,6 +51,7 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Rotate Camera by some speed over time
 
         if(_isMoving)
         {
@@ -63,12 +68,15 @@ public class CameraController : MonoBehaviour
                 _isMoving = false;
                 _isInMovingCooldown = true;
                 _cooldownTimer = 0f;
+                _freeLookCam.m_LookAt = null;
             }
 
             return;
         }
 
-        if(_isInMovingCooldown)
+        //Cooldown after camera rotation
+
+        if (_isInMovingCooldown)
         {
             _cooldownTimer += Time.deltaTime;
 
@@ -81,6 +89,8 @@ public class CameraController : MonoBehaviour
             return;
         }
 
+        // Recieve input to calculate in which direction camera should rotate
+
         _horizontal = VirtualJoystick.GetAxis("Horizontal", 1);
 
         if (_horizontal == 0) return;
@@ -89,7 +99,8 @@ public class CameraController : MonoBehaviour
         _isMoving = true;
         float xVal = _freeLookCam.m_XAxis.Value;
 
-
         _targetAngle = xVal + (_horizontal * 90f);
+
+        _freeLookCam.m_LookAt = _playerTransform;
     }
 }

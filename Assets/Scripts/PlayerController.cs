@@ -56,6 +56,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        // PLayer is Moving
         if (_isMoving)
         {
             _moveTimer += Time.deltaTime;
@@ -77,6 +78,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        // Cooldown timer after moving
         if(_isInCooldown)
         {
             _coolDownTimer += Time.deltaTime;
@@ -88,7 +90,8 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if(!_isMoving && !_isInCooldown)
+        // Take inputs if player is not moving, in cooldown or camera is not rotating
+        if(!_isMoving && !_isInCooldown && !CameraController.Instance.IsMoving)
         {
             horizontal = VirtualJoystick.GetAxis("Horizontal", 0);
             vertical = VirtualJoystick.GetAxis("Vertical", 0);
@@ -96,6 +99,7 @@ public class PlayerController : MonoBehaviour
 
         //Debug.Log("H : " + horizontal + ", V : " + vertical);
 
+        // Ignore movement of no inputs are recieved
         if (horizontal == 0f && vertical == 0f)
         {
             return;
@@ -148,9 +152,11 @@ public class PlayerController : MonoBehaviour
             move = camRight * Mathf.Sign(horizontal); // East or West
         }
 
+        // check if a wall is in front
         Vector3 origin = _transform.position; 
         bool wallAhead = Physics.Raycast(origin, move.normalized, _wallCheckDistance, _obstacleLayer);
 
+        // PLay animation of jump but dont move if wall is ahead
         if (!wallAhead)
         {
             _isMoving = true;
@@ -166,6 +172,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // Round up decimal upto mentioned decimal point
     private float RoundUpToDecimal(float number, int numDecimalPlaces)
     {
         double multiplier = Math.Pow(10, numDecimalPlaces);
