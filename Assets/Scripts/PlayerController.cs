@@ -12,7 +12,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField]private float _speed = 5f;
     [SerializeField]private Transform _cameraTransform;
     [SerializeField]private LayerMask _obstacleLayer;
-    [SerializeField] private float _wallCheckDistance = 10f;
+    [SerializeField]private float _wallCheckDistance = 10f;
+
+    [SerializeField] private Transform _fireballAimTransform;
+    [SerializeField] private Transform _crystalStackTransform;
+    [SerializeField] private float _crystalStackYOffset = 1f;
 
     private Vector3 _lastMoveDirection = Vector3.zero;
 
@@ -24,12 +28,16 @@ public class PlayerController : MonoBehaviour
     private Animator _animator;
     private bool _isMoving;
     private bool _isInCooldown;
+    private bool _canShoot;
+
     private float _moveTimer;
     private float _coolDownTimer;
+    private float _shootTimer;
     private float _maxMoveTime;
-
     private float horizontal;
     private float vertical;
+
+    private Vector3 _crystalStackOffset;
     private Vector3 move;
 
     private void Awake()
@@ -52,6 +60,7 @@ public class PlayerController : MonoBehaviour
         _animator = GetComponent<Animator>();
         _maxMoveTime = 1f / _speed;
         _animator.speed = _speed - 0.5f;
+        _crystalStackOffset = Vector3.zero;
     }
 
     void Update()
@@ -95,6 +104,17 @@ public class PlayerController : MonoBehaviour
         {
             horizontal = VirtualJoystick.GetAxis("Horizontal", 0);
             vertical = VirtualJoystick.GetAxis("Vertical", 0);
+        }
+
+        if(!_canShoot)
+        {
+            _shootTimer += Time.deltaTime;
+
+            if(_shootTimer > 1f)
+            {
+                _shootTimer = 0f;
+                _canShoot = true;
+            }
         }
 
         //Debug.Log("H : " + horizontal + ", V : " + vertical);
@@ -170,6 +190,29 @@ public class PlayerController : MonoBehaviour
             Quaternion rot = Quaternion.LookRotation(move);
             _transform.rotation = Quaternion.Slerp(_transform.rotation, rot, 10000000f * Time.deltaTime);
         }
+    }
+
+    public void ShootFireball()
+    {
+        if (!_canShoot) return;
+
+        PoolController.Instance.SpawnFromPool("HopmonFireball", _fireballAimTransform.position, _fireballAimTransform.rotation);
+        _canShoot = false;
+        _shootTimer = 0f;
+    }
+
+    public void StackCrystal(Transform crystalTransform)
+    {
+        crystalTransform.position = _crystalStackTransform.position + _crystalStackOffset;
+        crystalTransform.rotation = _crystalStackTransform.rotation;
+        crystalTransform.SetParent(_crystalStackTransform);
+
+        _crystalStackOffset += new Vector3(0f, _crystalStackYOffset, 0f);
+    }
+
+    public void ResetPlayer()
+    {
+
     }
 
     // Round up decimal upto mentioned decimal point
