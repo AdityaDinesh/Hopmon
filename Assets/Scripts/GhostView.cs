@@ -9,13 +9,16 @@ public class GhostView : MonoBehaviour
     [SerializeField] private float speed = 3f;
     [SerializeField] private Vector2 changeDirectionInterval;
     [SerializeField] private LayerMask wallLayer;
+    [SerializeField] private LayerMask obstacleLayer;
     [SerializeField] private float wallCheckDistance = 1f;
-    [SerializeField]private Vector3 currentDirection;
+
+    private Vector3 currentDirection;
     private float timer;
     private float currentChangeDirectionInterval;
     //private float _changeDirectionOffset = 0f;
 
     private Transform _transform;
+    private Animator _Animator;
 
     //private bool _canChangeDirection;
     private bool _isDead;
@@ -35,6 +38,7 @@ public class GhostView : MonoBehaviour
     private void Awake()
     {
         _transform = transform;
+        _Animator = GetComponent<Animator>();
     }
 
     private void Start()
@@ -49,7 +53,7 @@ public class GhostView : MonoBehaviour
 
         timer += Time.deltaTime;
 
-        if (timer >= currentChangeDirectionInterval || IsWallAhead(currentDirection))
+        if (timer >= currentChangeDirectionInterval || IsBlockedAhead(currentDirection))
         {
             #region Old Code
 
@@ -112,6 +116,19 @@ public class GhostView : MonoBehaviour
         Move();
         RotateToDirection();
         Debug.DrawRay(_transform.position, currentDirection * wallCheckDistance, Color.red);
+        Debug.DrawRay(_transform.position, Quaternion.AngleAxis(-30f, Vector3.up) * currentDirection * wallCheckDistance, Color.red);
+        Debug.DrawRay(_transform.position, Quaternion.AngleAxis(30f, Vector3.up) * currentDirection * wallCheckDistance, Color.red);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Fireball"))
+        {
+            _Animator.SetTrigger("dead");
+            _isDead = true;
+            Vector3 lookDirection = other.ClosestPoint(_transform.position) - _transform.position;
+            _transform.rotation = Quaternion.LookRotation(lookDirection);
+        }
     }
 
     private void Move()
@@ -126,7 +143,7 @@ public class GhostView : MonoBehaviour
         // Collect all valid directions
         for (int i = 0; i < directions.Length; i++)
         {
-            if (!IsWallAhead(directions[i]))
+            if (!IsBlockedAhead(directions[i]))
             {
                 if (directions[i] == -currentDirection || directions[i] == currentDirection) continue;
 
@@ -147,10 +164,43 @@ public class GhostView : MonoBehaviour
         }
     }
 
-    private bool IsWallAhead(Vector3 dir)
+    private bool IsBlockedAhead(Vector3 dir)
     {
-        Ray ray = new Ray(_transform.position, dir);
-        return Physics.Raycast(ray, wallCheckDistance, wallLayer);
+        Vector3 origin = _transform.position;
+
+        // Precompute rotated directions (cheap)
+        Vector3 leftDir = Quaternion.AngleAxis(-30f, Vector3.up) * dir;
+        Vector3 rightDir = Quaternion.AngleAxis(30f, Vector3.up) * dir;
+
+
+        //Ray ray = new Ray(_transform.position, dir);
+        //return Physics.Raycast(ray, wallCheckDistance, wallLayer);
+
+        // Forward ray
+        if (Physics.Raycast(origin, dir, wallCheckDistance, obstacleLayer))
+        {
+            currentDirection *= -1;
+            return true;
+        }
+
+        if (Physics.Raycast(origin, dir, wallCheckDistance, wallLayer))
+            return true;
+
+        // Left 30°
+        if (Physics.Raycast(origin, leftDir, wallCheckDistance, obstacleLayer))
+        {
+            currentDirection *= -1;
+            return true;
+        }
+
+        // Right 30°
+        if (Physics.Raycast(origin, rightDir, wallCheckDistance, obstacleLayer))
+        {
+            currentDirection *= -1;
+            return true;
+        }
+
+        return false;
     }
 
     private void RotateToDirection()
@@ -174,5 +224,4 @@ public class GhostView : MonoBehaviour
     {
         return (int)(Mathf.Abs(num) * 10) % 10;
     }
-
 }
