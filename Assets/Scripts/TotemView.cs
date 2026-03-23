@@ -12,6 +12,10 @@ public class TotemView : MonoBehaviour
     [SerializeField] private LayerMask obstacleLayer;
     [SerializeField] private float wallCheckDistance = 1f;
     [SerializeField] private Transform _bodyTransform;
+    [SerializeField] private MeshRenderer _bodyRenderer;
+    [SerializeField] private Material _hurtMaterial;
+
+    // E3AA44
 
     private Vector3 currentDirection;
     private float timer;
@@ -20,6 +24,8 @@ public class TotemView : MonoBehaviour
 
     private Transform _transform;
     private Animator _Animator;
+
+    private int _health = 2;
 
     //private bool _canChangeDirection;
     private bool _isDead;
@@ -135,6 +141,14 @@ public class TotemView : MonoBehaviour
     {
         if (other.CompareTag("Fireball"))
         {
+            _health--;
+
+            if (_health >= 1)
+            {
+                _bodyRenderer.material = _hurtMaterial;
+                return;
+            }
+
             _Animator.SetTrigger("dead");
             _isDead = true;
             Vector3 lookDirection = other.ClosestPoint(_transform.position) - _transform.position;

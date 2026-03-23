@@ -36,7 +36,7 @@ Material:
     - _RimStep: 1
     - _RimStepSmooth: 1
     - _ShadowStep: 0.6
-    - _ShadowStepSmooth: 0.024
+    - _ShadowStepSmooth: 0.3
     - _SpecularStep: 1
     - _SpecularStepSmooth: 0.015
     - _Step: 0.432

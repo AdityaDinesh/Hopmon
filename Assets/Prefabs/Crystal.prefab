@@ -2420,3 +2420,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rotationSpeed: {x: 0, y: 100, z: 0}
+  _shadowGameObject: {fileID: 690317025853756904}

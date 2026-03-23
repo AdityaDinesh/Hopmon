@@ -5,6 +5,7 @@ using UnityEngine;
 public class CrystalView : MonoBehaviour
 {
     [SerializeField] private Vector3 _rotationSpeed;
+    [SerializeField] private GameObject _shadowGameObject;
 
     private Transform _transform;
 
@@ -29,6 +30,7 @@ public class CrystalView : MonoBehaviour
         {
             _isCollected = true;
             PlayerController.Instance.StackCrystal(_transform);
+            _shadowGameObject.SetActive(false);
         }
     }
 }

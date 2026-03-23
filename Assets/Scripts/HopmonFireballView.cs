@@ -26,7 +26,7 @@ public class HopmonFireballView : PoolObject
         {
             _returnToPoolTimer += Time.deltaTime;
 
-            if(_returnToPoolTimer > 0.1f)
+            if(_returnToPoolTimer > 0.05f)
             {
                 _canReturnToPool = false;
                 _isDead = true;
@@ -41,8 +41,10 @@ public class HopmonFireballView : PoolObject
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Obstacle"))
+        if(other.CompareTag("Obstacle") || other.CompareTag("Enemy"))
         {
+            if (_canReturnToPool || _isDead) return;
+
             // Particles
 
             _canReturnToPool = true;

@@ -104,7 +104,7 @@ Material:
     - _RimStep: 0.757
     - _RimStepSmooth: 0
     - _ShadowStep: 0.504
-    - _ShadowStepSmooth: 0.066
+    - _ShadowStepSmooth: 0.3
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
