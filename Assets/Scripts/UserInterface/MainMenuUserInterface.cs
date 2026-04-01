@@ -26,18 +26,16 @@ public class MainMenuUserInterface : UserInterface
 
     public override void Show()
     {
-        base.Show();
+        //base.Show();
         _uiGameObject.SetActive(true);
         _mainMenuPlayerGameObject.SetActive(true);
         _mainMenuPlayerTransform.rotation = Quaternion.identity;
         //Activate Main Menu Camera
-
     }
 
     public override void Hide()
     {
         base.Hide();
-        _uiGameObject.SetActive(false);
         _mainMenuPlayerGameObject.SetActive(false);
     }
 }

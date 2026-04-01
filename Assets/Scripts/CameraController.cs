@@ -8,7 +8,14 @@ public class CameraController : MonoBehaviour
 {
     public static CameraController Instance;
 
+    public enum CameraType
+    {
+        MainMenu,
+        GamePlay,
+    }
+
     [SerializeField] private CinemachineFreeLook _freeLookCam;
+    [SerializeField] private CinemachineFreeLook _mainMenuCam;
     [SerializeField] private float _rotationSpeed = 5f;
 
     private Transform _playerTransform;
@@ -45,7 +52,7 @@ public class CameraController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _playerTransform = PlayerController.Instance.PlayerTransform;
+        //_playerTransform = PlayerController.Instance.PlayerTransform;
     }
 
     // Update is called once per frame
@@ -102,5 +109,23 @@ public class CameraController : MonoBehaviour
         _targetAngle = xVal + (_horizontal * 90f);
 
         _freeLookCam.m_LookAt = _playerTransform;
+    }
+
+    public void SetCamera(CameraType cameraType)
+    {
+        if(cameraType == CameraType.MainMenu)
+        {
+            _freeLookCam.Priority = 5;
+            _mainMenuCam.Priority = 10;
+            return;
+        }
+
+        if(_playerTransform == null)
+        {
+            _playerTransform = PlayerController.Instance.PlayerTransform;
+        }
+
+        _freeLookCam.Priority = 10;
+        _mainMenuCam.Priority = 5;
     }
 }

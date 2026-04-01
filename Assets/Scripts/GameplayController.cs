@@ -6,15 +6,15 @@ public class GameplayController : MonoBehaviour
 {
     public static GameplayController Instance;
 
-    //public enum CameraFacingDirection
-    //{
-    //    North,
-    //    South,
-    //    West,
-    //    East
-    //}
+    public enum GameState
+    {
+        Start,
+        Playing,
+        Pause,
+        GameOver
+    }
 
-    //private CameraFacingDirection _currentCameraFacingDirection = CameraFacingDirection.North;
+    private GameState _currentGameState = GameState.Start;
 
     private void Awake()
     {
@@ -36,12 +36,29 @@ public class GameplayController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        _currentGameState = GameState.Start;
+        CameraController.Instance.SetCamera(CameraController.CameraType.MainMenu);
+        //UserInterfaceController.Instance.HideAllUI();
+        UserInterfaceController.Instance.SetActiveUI(UserInterfaceController.UIState.MainMenu);
+        UserInterfaceController.Instance.ShowUI();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetGameState(GameState gameState)
     {
-        
+        _currentGameState = gameState;
+
+        if(_currentGameState == GameState.Playing)
+        {
+            PlayerController.Instance.gameObject.SetActive(true);
+            PlayerController.Instance.ResetPlayer();
+        }
+
+        if(_currentGameState == GameState.GameOver)
+        {
+            // Do Stuff For Game Reset
+
+            UserInterfaceController.Instance.SetActiveUI(UserInterfaceController.UIState.MainMenu);
+            PlayerController.Instance.gameObject.SetActive(false);
+        }
     }
 }

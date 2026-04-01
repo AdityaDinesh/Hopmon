@@ -43,7 +43,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_AnchoredPosition.x
-    path: LeftHalf/Loading Screen Left
+    path: Canvas/Loading Panel/LeftHalf
     classID: 224
     script: {fileID: 0}
     flags: 0
@@ -73,7 +73,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_SizeDelta.x
-    path: LeftHalf/Loading Screen Left
+    path: Canvas/Loading Panel/LeftHalf
     classID: 224
     script: {fileID: 0}
     flags: 0
@@ -103,7 +103,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_AnchoredPosition.x
-    path: Right Half/Loading Screen Right
+    path: Canvas/Loading Panel/Right Half
     classID: 224
     script: {fileID: 0}
     flags: 0
@@ -133,7 +133,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_SizeDelta.x
-    path: Right Half/Loading Screen Right
+    path: Canvas/Loading Panel/Right Half
     classID: 224
     script: {fileID: 0}
     flags: 0
@@ -146,7 +146,7 @@ AnimationClip:
   m_ClipBindingConstant:
     genericBindings:
     - serializedVersion: 2
-      path: 3872314806
+      path: 1032404009
       attribute: 1460864421
       script: {fileID: 0}
       typeID: 224
@@ -155,7 +155,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 2790209793
+      path: 3369730164
       attribute: 1460864421
       script: {fileID: 0}
       typeID: 224
@@ -164,7 +164,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 3872314806
+      path: 1032404009
       attribute: 1967290853
       script: {fileID: 0}
       typeID: 224
@@ -173,7 +173,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 2790209793
+      path: 3369730164
       attribute: 1967290853
       script: {fileID: 0}
       typeID: 224
@@ -229,7 +229,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_AnchoredPosition.x
-    path: LeftHalf/Loading Screen Left
+    path: Canvas/Loading Panel/LeftHalf
     classID: 224
     script: {fileID: 0}
     flags: 0
@@ -259,7 +259,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_SizeDelta.x
-    path: LeftHalf/Loading Screen Left
+    path: Canvas/Loading Panel/LeftHalf
     classID: 224
     script: {fileID: 0}
     flags: 0
@@ -289,7 +289,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_AnchoredPosition.x
-    path: Right Half/Loading Screen Right
+    path: Canvas/Loading Panel/Right Half
     classID: 224
     script: {fileID: 0}
     flags: 0
@@ -319,7 +319,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_SizeDelta.x
-    path: Right Half/Loading Screen Right
+    path: Canvas/Loading Panel/Right Half
     classID: 224
     script: {fileID: 0}
     flags: 0
