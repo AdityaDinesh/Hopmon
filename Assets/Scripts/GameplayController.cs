@@ -38,7 +38,7 @@ public class GameplayController : MonoBehaviour
     {
         _currentGameState = GameState.Start;
         CameraController.Instance.SetCamera(CameraController.CameraType.MainMenu);
-        //UserInterfaceController.Instance.HideAllUI();
+        UserInterfaceController.Instance.HideAllUI();
         UserInterfaceController.Instance.SetActiveUI(UserInterfaceController.UIState.MainMenu);
         UserInterfaceController.Instance.ShowUI();
     }

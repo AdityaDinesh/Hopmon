@@ -30,7 +30,6 @@ public class MainMenuUserInterface : UserInterface
         _uiGameObject.SetActive(true);
         _mainMenuPlayerGameObject.SetActive(true);
         _mainMenuPlayerTransform.rotation = Quaternion.identity;
-        //Activate Main Menu Camera
     }
 
     public override void Hide()

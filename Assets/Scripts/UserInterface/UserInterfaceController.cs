@@ -15,10 +15,10 @@ public class UserInterfaceController : MonoBehaviour
 
     public enum UIState
     {
-        MainMenu,
-        LevelSelect,
-        Gameplay,
-        Pause,
+        MainMenu = 0,
+        LevelSelect = 1,
+        Gameplay = 2,
+        Pause = 3,
     }
 
     private Dictionary<UIState, UserInterface> _userInterfaceDictionary;
@@ -91,17 +91,29 @@ public class UserInterfaceController : MonoBehaviour
     {
         _currentUIState = uiState;
         _loadingScreenAnimator.SetTrigger("show");
+        Debug.Log(_currentUIState);
+    }
+
+    public void SetActiveUIFromEditor(int uiStateID)
+    {
+        _currentUIState = (UIState)uiStateID;
+        _loadingScreenAnimator.SetTrigger("show");
     }
 
     public void ShowUI()
     {
+        if(_activeUserInterface != null)
+        {
+            _activeUserInterface.Hide();
+        }
+
         if(_currentUIState == UIState.MainMenu)
         {
             _loadingScreenAnimator.ResetTrigger("show");
-            mainMenuUserInterface.Show();
-            _activeUserInterface = _userInterfaceDictionary[_currentUIState];
-            _loadingScreenAnimator.SetTrigger("hide");
-            return;
+            //mainMenuUserInterface.Show();
+            //_activeUserInterface = _userInterfaceDictionary[_currentUIState];
+            //_loadingScreenAnimator.SetTrigger("hide");
+            //return;
         }
 
         _activeUserInterface = _userInterfaceDictionary[_currentUIState];
