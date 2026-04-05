@@ -30,6 +30,7 @@ public class MainMenuUserInterface : UserInterface
         _uiGameObject.SetActive(true);
         _mainMenuPlayerGameObject.SetActive(true);
         _mainMenuPlayerTransform.rotation = Quaternion.identity;
+        PlayerController.Instance.gameObject.SetActive(false);
     }
 
     public override void Hide()
