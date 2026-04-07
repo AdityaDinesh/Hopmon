@@ -14,13 +14,11 @@ public class GameplayController : MonoBehaviour
         GameOver
     }
 
-    [SerializeField] private LevelData _levelData;
-    [SerializeField] private GameObject[] _levelPrefabList;
-    [SerializeField] private Transform _levelLoadPositionTransform;
-
+    public GameState CurrentGameState
+    {
+        get { return _currentGameState; }
+    }
     private GameState _currentGameState = GameState.Start;
-    private int _currentlevel = 0;
-    private GameObject _currentLevelGameObject;
 
     private void Awake()
     {
@@ -68,19 +66,10 @@ public class GameplayController : MonoBehaviour
 
     public void StartGame(int levelNumber)
     {
-        _currentlevel = levelNumber;
-        _currentLevelGameObject = Instantiate(_levelPrefabList[_currentlevel], _levelLoadPositionTransform.position, _levelLoadPositionTransform.rotation);
-
         PlayerController.Instance.gameObject.SetActive(true);
         PlayerController.Instance.ResetPlayer();
         CameraController.Instance.SetCamera(CameraController.CameraType.GamePlay);
-    }
-
-    public void LoadNextLevel()
-    {
-        _currentlevel++;
-        Destroy(_currentLevelGameObject);
-        _currentLevelGameObject = Instantiate(_levelPrefabList[_currentlevel], _levelLoadPositionTransform.position, _levelLoadPositionTransform.rotation);
+        LevelPrefabController.Instance.SetLevelData(levelNumber);
     }
 
     public void GameOver()
@@ -88,6 +77,7 @@ public class GameplayController : MonoBehaviour
         // Do Stuff For Game Reset
 
         UserInterfaceController.Instance.SetActiveUI(UserInterfaceController.UIState.MainMenu);
-        PlayerController.Instance.gameObject.SetActive(false);
+        _currentGameState = GameState.GameOver;
+        
     }
 }

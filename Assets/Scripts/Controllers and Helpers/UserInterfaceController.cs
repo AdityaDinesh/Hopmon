@@ -110,11 +110,20 @@ public class UserInterfaceController : MonoBehaviour
         if(_currentUIState == UIState.MainMenu)
         {
             _loadingScreenAnimator.ResetTrigger("show");
+            
+            if(GameplayController.Instance.CurrentGameState == GameplayController.GameState.GameOver)
+            {
+                PlayerController.Instance.gameObject.SetActive(false);
+                LevelPrefabController.Instance.HideCurrentLevel();
+            }
+
             //mainMenuUserInterface.Show();
             //_activeUserInterface = _userInterfaceDictionary[_currentUIState];
             //_loadingScreenAnimator.SetTrigger("hide");
             //return;
         }
+
+     
 
         _activeUserInterface = _userInterfaceDictionary[_currentUIState];
         _userInterfaceDictionary[_currentUIState].Show();

@@ -89,6 +89,7 @@ public class LevelSelectUserInterface : UserInterface
         if (!_canStartLevel) return;
 
         GameplayController.Instance.StartGame(currentLevel);
+        _canStartLevel = false;
     }
 
 
