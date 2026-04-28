@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Terresquall;
 using System;
+using System.Linq;
 
 public class PlayerController : MonoBehaviour
 {
@@ -20,6 +21,14 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 _lastMoveDirection = Vector3.zero;
 
+    private List<Transform> _crystalTransformList;
+
+    public Transform ActiveFlyingCrystalTransform
+    {
+        get { return _activeFlyingCrystalTransform; }
+    }
+    private Transform _activeFlyingCrystalTransform;
+
     public Transform PlayerTransform
     {
         get { return _transform; }
@@ -29,6 +38,7 @@ public class PlayerController : MonoBehaviour
     private bool _isMoving;
     private bool _isInCooldown;
     private bool _canShoot;
+    private bool _canFlyCrystal;
 
     private float _moveTimer;
     private float _coolDownTimer;
@@ -36,6 +46,7 @@ public class PlayerController : MonoBehaviour
     private float _maxMoveTime;
     private float horizontal;
     private float vertical;
+    private float _flyCrystalTimer;
 
     private Vector3 _crystalStackOffset;
     private Vector3 move;
@@ -61,6 +72,8 @@ public class PlayerController : MonoBehaviour
         _maxMoveTime = 1f / _speed;
         _animator.speed = _speed - 0.5f;
         _crystalStackOffset = Vector3.zero;
+        _crystalTransformList = new List<Transform>();
+        _activeFlyingCrystalTransform = null;
     }
 
     void Update()
@@ -96,6 +109,33 @@ public class PlayerController : MonoBehaviour
             {
                 _coolDownTimer = 0f;
                 _isInCooldown = false;
+            }
+        }
+
+        if(_canFlyCrystal)
+        {
+            if (_crystalTransformList.Count > 0 || LevelPrefabController.Instance.TotalCrystals <= 0)
+            {
+                _flyCrystalTimer += Time.deltaTime;
+
+                if (_flyCrystalTimer > 1f)
+                {
+                    // If all crystals have been released
+                    if(_crystalTransformList.Count <= 0)
+                    {
+
+                    }
+                    else
+                    {
+                        _activeFlyingCrystalTransform = _crystalTransformList.LastOrDefault();
+                        _crystalTransformList.Remove(_activeFlyingCrystalTransform);
+                        _crystalStackOffset -= new Vector3(0f, _crystalStackYOffset, 0f);
+
+                        LevelPrefabController.Instance.ReleaseCrystal();
+                    }
+
+                    _flyCrystalTimer = 0f;
+                }
             }
         }
 
@@ -192,6 +232,24 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void OnTriggerStay(Collider other)
+    {
+        if(other.CompareTag("Star") && !_canFlyCrystal)
+        {
+            _canFlyCrystal = true;
+            _flyCrystalTimer = 0f;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Star") && _canFlyCrystal)
+        {
+            _canFlyCrystal = false;
+            _flyCrystalTimer = 0f;
+        }
+    }
+
     public void ShootFireball()
     {
         if (!_canShoot) return;
@@ -206,13 +264,15 @@ public class PlayerController : MonoBehaviour
         crystalTransform.position = _crystalStackTransform.position + _crystalStackOffset;
         crystalTransform.rotation = _crystalStackTransform.rotation;
         crystalTransform.SetParent(_crystalStackTransform);
+        _crystalTransformList.Add(crystalTransform);
 
         _crystalStackOffset += new Vector3(0f, _crystalStackYOffset, 0f);
     }
 
     public void ResetPlayer()
     {
-
+        _crystalTransformList.Clear();
+        _crystalStackOffset = Vector3.zero;
     }
 
     // Round up decimal upto mentioned decimal point

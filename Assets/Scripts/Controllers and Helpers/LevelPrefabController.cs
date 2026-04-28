@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Loads/Hides Level Prefab Data and also updates UI level elements
+/// </summary>
+
 public class LevelPrefabController : MonoBehaviour
 {
     public static LevelPrefabController Instance;
@@ -16,6 +20,11 @@ public class LevelPrefabController : MonoBehaviour
 
     private int _currentLevel;
     private GameObject _currentLevelGameObject;
+
+    public int TotalCrystals
+    {
+        get { return _totalCrystals; }
+    }
     private int _totalCrystals;
 
     private void Awake()
@@ -70,7 +79,7 @@ public class LevelPrefabController : MonoBehaviour
         _totalCrystals = crystalNumber;
     }
 
-    public void AddCrystal()
+    public void ReleaseCrystal()
     {
         _totalCrystals--;
         _crystalNumberText.text = _totalCrystals.ToString("00");

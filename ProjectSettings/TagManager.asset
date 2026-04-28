@@ -7,6 +7,8 @@ TagManager:
   - Obstacle
   - Fireball
   - Enemy
+  - Star
+  - Bound
   layers:
   - Default
   - TransparentFX

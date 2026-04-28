@@ -11,7 +11,8 @@ public class GameplayController : MonoBehaviour
         Start,
         Playing,
         Pause,
-        GameOver
+        GameOver,
+        LevelEnd
     }
 
     public GameState CurrentGameState
@@ -76,6 +77,8 @@ public class GameplayController : MonoBehaviour
     {
         // Do Stuff For Game Reset
 
+        PlayerController.Instance.gameObject.SetActive(false);
+        CameraController.Instance.SetCamera(CameraController.CameraType.MainMenu);
         UserInterfaceController.Instance.SetActiveUI(UserInterfaceController.UIState.MainMenu);
         _currentGameState = GameState.GameOver;
         
