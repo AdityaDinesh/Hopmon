@@ -8,10 +8,9 @@ public class GameplayController : MonoBehaviour
 
     public enum GameState
     {
-        Start,
+        Menu,
         Playing,
         Pause,
-        GameOver,
         LevelEnd
     }
 
@@ -19,7 +18,7 @@ public class GameplayController : MonoBehaviour
     {
         get { return _currentGameState; }
     }
-    private GameState _currentGameState = GameState.Start;
+    private GameState _currentGameState = GameState.Menu;
 
     private void Awake()
     {
@@ -41,7 +40,7 @@ public class GameplayController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _currentGameState = GameState.Start;
+        _currentGameState = GameState.Menu;
         CameraController.Instance.SetCamera(CameraController.CameraType.MainMenu);
         UserInterfaceController.Instance.HideAllUI();
         UserInterfaceController.Instance.SetActiveUI(UserInterfaceController.UIState.MainMenu);
@@ -59,7 +58,7 @@ public class GameplayController : MonoBehaviour
             
         }
 
-        if(_currentGameState == GameState.GameOver)
+        if(_currentGameState == GameState.LevelEnd)
         {
             
         }
@@ -71,6 +70,7 @@ public class GameplayController : MonoBehaviour
         PlayerController.Instance.ResetPlayer();
         CameraController.Instance.SetCamera(CameraController.CameraType.GamePlay);
         LevelPrefabController.Instance.SetLevelData(levelNumber);
+        _currentGameState = GameState.Playing;
     }
 
     public void GameOver()
@@ -78,9 +78,10 @@ public class GameplayController : MonoBehaviour
         // Do Stuff For Game Reset
 
         PlayerController.Instance.gameObject.SetActive(false);
+        CameraController.Instance.FinishLevelEndCameraMovement();
         CameraController.Instance.SetCamera(CameraController.CameraType.MainMenu);
-        UserInterfaceController.Instance.SetActiveUI(UserInterfaceController.UIState.MainMenu);
-        _currentGameState = GameState.GameOver;
-        
+        LevelPrefabController.Instance.HideCurrentLevel();
+        //UserInterfaceController.Instance.SetActiveUI(UserInterfaceController.UIState.MainMenu);
+        _currentGameState = GameState.Menu;
     }
 }

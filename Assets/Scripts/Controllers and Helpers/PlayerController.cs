@@ -19,6 +19,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform _crystalStackTransform;
     [SerializeField] private float _crystalStackYOffset = 1f;
 
+    public Transform BodyTransform
+    {
+        get { return _bodyTransform; }
+    }
+    [SerializeField] private Transform _bodyTransform;
+
     private Vector3 _lastMoveDirection = Vector3.zero;
 
     private List<Transform> _crystalTransformList;
@@ -39,6 +45,8 @@ public class PlayerController : MonoBehaviour
     private bool _isInCooldown;
     private bool _canShoot;
     private bool _canFlyCrystal;
+    private bool _isLevelEnding;
+    private bool _isDead;
 
     private float _moveTimer;
     private float _coolDownTimer;
@@ -81,6 +89,11 @@ public class PlayerController : MonoBehaviour
         // PLayer is Moving
         if (_isMoving)
         {
+            if(CameraController.Instance.FreeLookCam.LookAt != null)
+            {
+                CameraController.Instance.SetLookAtParameter(null);
+            }
+
             _moveTimer += Time.deltaTime;
             _transform.position += move.normalized * _speed * Time.deltaTime;
 
@@ -112,7 +125,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if(_canFlyCrystal)
+        if(_canFlyCrystal && !_isLevelEnding)
         {
             if (_crystalTransformList.Count > 0 || LevelPrefabController.Instance.TotalCrystals <= 0)
             {
@@ -123,7 +136,10 @@ public class PlayerController : MonoBehaviour
                     // If all crystals have been released
                     if(_crystalTransformList.Count <= 0)
                     {
-
+                        _isLevelEnding = true;
+                        _animator.SetTrigger("fly");
+                        CameraController.Instance.StartLevelEndCameraMovement();
+                        GameplayController.Instance.SetGameState(GameplayController.GameState.LevelEnd);
                     }
                     else
                     {
@@ -139,8 +155,8 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        // Take inputs if player is not moving, in cooldown or camera is not rotating
-        if(!_isMoving && !_isInCooldown && !CameraController.Instance.IsMoving)
+        // Take inputs if player is not moving, in cooldown, camera is not rotating or in pause mode
+        if(!_isMoving && !_isInCooldown && !CameraController.Instance.IsMoving && GameplayController.Instance.CurrentGameState != GameplayController.GameState.Pause)
         {
             horizontal = VirtualJoystick.GetAxis("Horizontal", 0);
             vertical = VirtualJoystick.GetAxis("Vertical", 0);
@@ -232,6 +248,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Enemy") && !_isDead)
+        {
+            OnPlayerDeath();
+        }
+    }
+
     private void OnTriggerStay(Collider other)
     {
         if(other.CompareTag("Star") && !_canFlyCrystal)
@@ -248,6 +272,26 @@ public class PlayerController : MonoBehaviour
             _canFlyCrystal = false;
             _flyCrystalTimer = 0f;
         }
+    }
+
+    public void OnPlayerDeath()
+    {
+        _isDead = true;
+        _animator.SetTrigger("dead");
+        CameraController.Instance.StartLevelEndCameraMovement(true);
+    }
+
+    public void OnLevelEndAnimationFinish()
+    {
+        _isLevelEnding = false;
+
+        if(_isDead)
+        {
+            UserInterfaceController.Instance.SetActiveUI(UserInterfaceController.UIState.MainMenu);
+            return;
+        }
+
+        UserInterfaceController.Instance.SetActiveUI(UserInterfaceController.UIState.Gameplay);
     }
 
     public void ShootFireball()
@@ -273,6 +317,14 @@ public class PlayerController : MonoBehaviour
     {
         _crystalTransformList.Clear();
         _crystalStackOffset = Vector3.zero;
+        _isLevelEnding = false;
+        _animator.Rebind();
+        _isDead = false;
+
+        // Reset Rotation
+        Vector3 rot = _transform.eulerAngles;
+        rot.y = -180;
+        _transform.eulerAngles = rot;
     }
 
     // Round up decimal upto mentioned decimal point

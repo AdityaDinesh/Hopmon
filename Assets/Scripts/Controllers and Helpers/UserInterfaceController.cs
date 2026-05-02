@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Terresquall;
 using UnityEngine;
 
 [System.Serializable]
@@ -49,6 +50,12 @@ public class UserInterfaceController : MonoBehaviour
     }
     private UIState _currentUIState = UIState.MainMenu;
 
+    [SerializeField] private GameObject _inputControlsParentGameObject;
+    [SerializeField] private GameObject _pauseUIGameObject;
+
+    private UIState _previousUIState;
+    private bool _isPaused;
+
     private void Awake()
     {
         // Check if an instance already exists
@@ -89,6 +96,8 @@ public class UserInterfaceController : MonoBehaviour
 
     public void SetActiveUI(UIState uiState)
     {
+        _previousUIState = _currentUIState;
+
         _currentUIState = uiState;
         _loadingScreenAnimator.SetTrigger("show");
         Debug.Log(_currentUIState);
@@ -111,11 +120,11 @@ public class UserInterfaceController : MonoBehaviour
         {
             _loadingScreenAnimator.ResetTrigger("show");
             
-            if(GameplayController.Instance.CurrentGameState == GameplayController.GameState.GameOver)
-            {
-                PlayerController.Instance.gameObject.SetActive(false);
-                LevelPrefabController.Instance.HideCurrentLevel();
-            }
+            //if(GameplayController.Instance.CurrentGameState == GameplayController.GameState.GameOver)
+            //{
+            //    PlayerController.Instance.gameObject.SetActive(false);
+            //    LevelPrefabController.Instance.HideCurrentLevel();
+            //}
 
             //mainMenuUserInterface.Show();
             //_activeUserInterface = _userInterfaceDictionary[_currentUIState];
@@ -123,11 +132,57 @@ public class UserInterfaceController : MonoBehaviour
             //return;
         }
 
-     
+        if (_currentUIState == UIState.MainMenu && _previousUIState == UIState.Gameplay)
+        {
+            GameplayController.Instance.GameOver();
+        }
+
+            // Load new level once UI loading canvas has started show animation
+        if (_currentUIState == UIState.Gameplay && _previousUIState == UIState.Gameplay)
+        {
+            LevelPrefabController.Instance.LoadNextLevel();
+            PlayerController.Instance.ResetPlayer();
+            CameraController.Instance.FinishLevelEndCameraMovement();
+            CameraController.Instance.SetCamera(CameraController.CameraType.GamePlay);
+            GameplayController.Instance.SetGameState(GameplayController.GameState.Playing);
+        }
 
         _activeUserInterface = _userInterfaceDictionary[_currentUIState];
         _userInterfaceDictionary[_currentUIState].Show();
         _loadingScreenAnimator.SetTrigger("hide");
+    }
+
+    public void PauseGame()
+    {
+        if (_isPaused) return;
+
+        _pauseUIGameObject.SetActive(true);
+        Time.timeScale = 0f;
+        _isPaused = true;
+        GameplayController.Instance.SetGameState(GameplayController.GameState.Pause);
+        SetInputUI(true);
+    }
+
+    public void ResumeGame()
+    {
+        if (!_isPaused) return;
+
+        _pauseUIGameObject.SetActive(false);
+        Time.timeScale = 1f;
+        _isPaused = false;
+        GameplayController.Instance.SetGameState(GameplayController.GameState.Playing);
+        SetInputUI(false);
+    }
+
+    public void EndGame()
+    {
+        // What happens when you hit home on pause menu.
+        // Trigger Player kill -> Game Over -> Main Menu
+        
+        _pauseUIGameObject.SetActive(false);
+        Time.timeScale = 1f;
+        _isPaused = false;
+        PlayerController.Instance.OnPlayerDeath();
     }
 
     public void HideAllUI()
@@ -135,6 +190,26 @@ public class UserInterfaceController : MonoBehaviour
         foreach (var userInterface in _userInterfaceDictionary.Values)
         {
             userInterface.Hide();
+        }
+    }
+
+    public void SetInputUI(bool hide)
+    {
+        if(_inputControlsParentGameObject == null)
+        {
+            Debug.LogError("Input Control ParentGameObject is Null");
+            return;
+        }
+
+        if(hide == true && _inputControlsParentGameObject.activeInHierarchy)
+        {
+            _inputControlsParentGameObject.SetActive(false);
+            return;
+        }
+
+        if (hide == false && !_inputControlsParentGameObject.activeInHierarchy)
+        {
+            _inputControlsParentGameObject.SetActive(true);
         }
     }
 }
