@@ -69,7 +69,12 @@ public class LevelPrefabController : MonoBehaviour
         }
 
         // Increment unlocked levels in level data scriptable object, but also ensure it doesn't exceed total number of levels
-        _levelData.unlockedLevels = _levelData.unlockedLevels + 1 <= _levelData.totalLevels ? _levelData.unlockedLevels++ : _levelData.unlockedLevels; 
+
+        if(_currentLevel >= _levelData.unlockedLevels)
+        {
+            _levelData.unlockedLevels++;
+            Debug.Log("Unlocked Level Count : " + _levelData.unlockedLevels);
+        }
     }
 
     public void SetLevelUI(int crystalNumber)

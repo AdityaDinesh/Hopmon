@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 _lastMoveDirection = Vector3.zero;
 
     private List<Transform> _crystalTransformList;
+    private List<CrystalView> _crystalViewList;
 
     public Transform ActiveFlyingCrystalTransform
     {
@@ -46,6 +47,11 @@ public class PlayerController : MonoBehaviour
     private bool _canShoot;
     private bool _canFlyCrystal;
     private bool _isLevelEnding;
+
+    public bool IsDead
+    {
+        get { return _isDead; }
+    }
     private bool _isDead;
 
     private float _moveTimer;
@@ -81,11 +87,14 @@ public class PlayerController : MonoBehaviour
         _animator.speed = _speed - 0.5f;
         _crystalStackOffset = Vector3.zero;
         _crystalTransformList = new List<Transform>();
+        _crystalViewList = new List<CrystalView>();
         _activeFlyingCrystalTransform = null;
     }
 
     void Update()
     {
+        if (_isDead) return;
+
         // PLayer is Moving
         if (_isMoving)
         {
@@ -277,6 +286,12 @@ public class PlayerController : MonoBehaviour
     public void OnPlayerDeath()
     {
         _isDead = true;
+
+        for (int i = 0; i < _crystalViewList.Count; i++)
+        {
+            _crystalViewList[i].Scatter();
+        }
+
         _animator.SetTrigger("dead");
         CameraController.Instance.StartLevelEndCameraMovement(true);
     }
@@ -303,7 +318,7 @@ public class PlayerController : MonoBehaviour
         _shootTimer = 0f;
     }
 
-    public void StackCrystal(Transform crystalTransform)
+    public void StackCrystal(Transform crystalTransform, CrystalView crystalView)
     {
         crystalTransform.position = _crystalStackTransform.position + _crystalStackOffset;
         crystalTransform.rotation = _crystalStackTransform.rotation;
@@ -311,15 +326,19 @@ public class PlayerController : MonoBehaviour
         _crystalTransformList.Add(crystalTransform);
 
         _crystalStackOffset += new Vector3(0f, _crystalStackYOffset, 0f);
+
+        _crystalViewList.Add(crystalView);
     }
 
     public void ResetPlayer()
     {
         _crystalTransformList.Clear();
+        _crystalViewList.Clear();
         _crystalStackOffset = Vector3.zero;
         _isLevelEnding = false;
         _animator.Rebind();
         _isDead = false;
+        _isMoving = false;
 
         // Reset Rotation
         Vector3 rot = _transform.eulerAngles;

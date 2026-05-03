@@ -137,7 +137,7 @@ public class UserInterfaceController : MonoBehaviour
             GameplayController.Instance.GameOver();
         }
 
-            // Load new level once UI loading canvas has started show animation
+        // Load new level once UI loading canvas has started show animation
         if (_currentUIState == UIState.Gameplay && _previousUIState == UIState.Gameplay)
         {
             LevelPrefabController.Instance.LoadNextLevel();

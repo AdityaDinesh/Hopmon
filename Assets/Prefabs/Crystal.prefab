@@ -2376,7 +2376,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!33 &4961551848384730782
 MeshFilter:
@@ -2422,3 +2422,6 @@ MonoBehaviour:
   _rotationSpeed: {x: 0, y: 100, z: 0}
   _shadowGameObject: {fileID: 690317025853756904}
   _flySpeed: 3
+  _explosionForce: 6
+  _upwardForce: 2
+  _radius: 2

@@ -9,6 +9,7 @@ TagManager:
   - Enemy
   - Star
   - Bound
+  - Ground
   layers:
   - Default
   - TransparentFX

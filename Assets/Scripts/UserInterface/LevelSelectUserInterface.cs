@@ -63,7 +63,8 @@ public class LevelSelectUserInterface : UserInterface
             levelPreviews[i].SetActive(i == currentLevel);
         }
 
-        levelText.text = "LEVEL " + (currentLevel + 1).ToString("00");
+        //levelText.text = "LEVEL " + (currentLevel + 1).ToString("00");
+        levelText.text = "LEVEL " + (currentLevel).ToString("00");
 
         leftButton.interactable = currentLevel > 0;
         rightButton.interactable = currentLevel < levelData.unlockedLevels - 1;
@@ -78,6 +79,8 @@ public class LevelSelectUserInterface : UserInterface
     public override void Show()
     {
         base.Show();
+        currentLevel = 0;
+        UpdateLevel();
         _levelPreviewGameObject.SetActive(true);
     }
 
