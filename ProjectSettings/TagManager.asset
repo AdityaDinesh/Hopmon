@@ -10,6 +10,7 @@ TagManager:
   - Star
   - Bound
   - Ground
+  - ChangeDirection
   layers:
   - Default
   - TransparentFX

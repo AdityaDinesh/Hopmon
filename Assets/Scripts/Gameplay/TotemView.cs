@@ -20,6 +20,7 @@ public class TotemView : MonoBehaviour
     private Vector3 currentDirection;
     private float timer;
     private float currentChangeDirectionInterval;
+    private float changeDirectionTriggerCooldownTimer;
     //private float _changeDirectionOffset = 0f;
 
     private Transform _transform;
@@ -29,6 +30,7 @@ public class TotemView : MonoBehaviour
 
     //private bool _canChangeDirection;
     private bool _isDead;
+    private bool _isInChangeDirectionTriggerCooldown;
 
     private static readonly Vector3[] directions = new Vector3[]
     {
@@ -129,7 +131,17 @@ public class TotemView : MonoBehaviour
 
                 _bodyTransform.eulerAngles = rot;
             }
+        }
 
+        if(_isInChangeDirectionTriggerCooldown)
+        {
+            changeDirectionTriggerCooldownTimer += Time.deltaTime;
+
+            if(changeDirectionTriggerCooldownTimer > currentChangeDirectionInterval)
+            {
+                changeDirectionTriggerCooldownTimer = 0f;
+                _isInChangeDirectionTriggerCooldown = false;
+            }
         }
 
         Move();
@@ -154,6 +166,12 @@ public class TotemView : MonoBehaviour
             Vector3 lookDirection = other.ClosestPoint(_transform.position) - _transform.position;
             _transform.rotation = Quaternion.LookRotation(lookDirection);
         }
+
+        if(other.CompareTag("ChangeDirection") && !_isInChangeDirectionTriggerCooldown)
+        {
+            timer = currentChangeDirectionInterval;
+            changeDirectionTriggerCooldownTimer = 0f;
+        }
     }
 
     private void Move()
@@ -170,7 +188,8 @@ public class TotemView : MonoBehaviour
         {
             if (!IsWallAhead(directions[i]))
             {
-                if (directions[i] == -currentDirection || directions[i] == currentDirection) continue;
+                //if (directions[i] == -currentDirection || directions[i] == currentDirection) continue;
+                if (directions[i] == -currentDirection) continue;
 
                 validDirections[validCount] = directions[i];
                 validCount++;

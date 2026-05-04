@@ -15,6 +15,8 @@ public class GhostView : MonoBehaviour
     private Vector3 currentDirection;
     private float timer;
     private float currentChangeDirectionInterval;
+    private float changeDirectionTriggerCooldownTimer;
+
     //private float _changeDirectionOffset = 0f;
 
     private Transform _transform;
@@ -22,6 +24,7 @@ public class GhostView : MonoBehaviour
 
     //private bool _canChangeDirection;
     private bool _isDead;
+    private bool _isInChangeDirectionTriggerCooldown;
 
     private static readonly Vector3[] directions = new Vector3[]
     {
@@ -113,6 +116,17 @@ public class GhostView : MonoBehaviour
 
         }
 
+        if (_isInChangeDirectionTriggerCooldown)
+        {
+            changeDirectionTriggerCooldownTimer += Time.deltaTime;
+
+            if (changeDirectionTriggerCooldownTimer > currentChangeDirectionInterval)
+            {
+                changeDirectionTriggerCooldownTimer = 0f;
+                _isInChangeDirectionTriggerCooldown = false;
+            }
+        }
+
         Move();
         RotateToDirection();
         Debug.DrawRay(_transform.position, currentDirection * wallCheckDistance, Color.red);
@@ -128,6 +142,12 @@ public class GhostView : MonoBehaviour
             _isDead = true;
             Vector3 lookDirection = other.ClosestPoint(_transform.position) - _transform.position;
             _transform.rotation = Quaternion.LookRotation(lookDirection);
+        }
+
+        if (other.CompareTag("ChangeDirection") && !_isInChangeDirectionTriggerCooldown)
+        {
+            timer = currentChangeDirectionInterval;
+            changeDirectionTriggerCooldownTimer = 0f;
         }
     }
 
@@ -145,7 +165,8 @@ public class GhostView : MonoBehaviour
         {
             if (!IsBlockedAhead(directions[i]))
             {
-                if (directions[i] == -currentDirection || directions[i] == currentDirection) continue;
+                //if (directions[i] == -currentDirection || directions[i] == currentDirection) continue;
+                if (directions[i] == -currentDirection) continue;
 
                 validDirections[validCount] = directions[i];
                 validCount++;
