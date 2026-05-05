@@ -29,9 +29,13 @@ public class CameraController : MonoBehaviour
 
     private float _orignalHeight;
     private float _orignalRadius;
+    private float _orignalHeight2;
+    private float _orignalRadius2;
 
     private float _finalHeight;
     private float _finalRadius;
+    private float _finalHeight2;
+    private float _finalRadius2;
 
     private Transform _playerTransform;
     private Transform _playerBodyTransform;
@@ -75,6 +79,9 @@ public class CameraController : MonoBehaviour
 
         _orignalHeight = _freeLookCam.m_Orbits[1].m_Height;
         _orignalRadius = _freeLookCam.m_Orbits[1].m_Radius;
+
+        _orignalHeight2 = _freeLookCam.m_Orbits[0].m_Height;
+        _orignalRadius2 = _freeLookCam.m_Orbits[0].m_Radius;
     }
 
     // Update is called once per frame
@@ -85,12 +92,17 @@ public class CameraController : MonoBehaviour
         if(_isLevelEnding)
         {
             var orbit = _freeLookCam.m_Orbits[1];
+            var orbit2 = _freeLookCam.m_Orbits[0];
+
             orbit.m_Height = Mathf.Lerp(orbit.m_Height, _finalHeight, Time.deltaTime * transitionSpeed);
+            orbit2.m_Height = Mathf.Lerp(orbit2.m_Height, _finalHeight2 + 1, Time.deltaTime * transitionSpeed);
 
             // 2. Smoothly adjust radius (zoom in)
             orbit.m_Radius = Mathf.Lerp(orbit.m_Radius, _finalRadius, Time.deltaTime * transitionSpeed);
+            orbit2.m_Radius = Mathf.Lerp(orbit2.m_Radius, _finalRadius2, Time.deltaTime * transitionSpeed);
 
             _freeLookCam.m_Orbits[1] = orbit;
+            _freeLookCam.m_Orbits[0] = orbit2;
 
             // 3. Rotate around player
             _freeLookCam.m_XAxis.Value += _rotationSpeed * 0.5f * Time.deltaTime;
@@ -181,6 +193,10 @@ public class CameraController : MonoBehaviour
         {
             _finalHeight = _orignalHeight;
             _finalRadius = _orignalRadius;
+
+            _finalHeight2 = _orignalHeight2;
+            _finalRadius2 = _orignalRadius2;
+
             _freeLookCam.m_LookAt = _playerTransform;
 
             return;
@@ -191,6 +207,9 @@ public class CameraController : MonoBehaviour
 
         _finalHeight = targetHeight;
         _finalRadius = targetRadius;
+
+        _finalHeight2 = _orignalHeight2 - 3f;
+        _finalRadius2 = _orignalRadius2 - 5f;
     }
 
     public void FinishLevelEndCameraMovement()
@@ -202,6 +221,9 @@ public class CameraController : MonoBehaviour
 
         _freeLookCam.m_Orbits[1].m_Height = _orignalHeight;
         _freeLookCam.m_Orbits[1].m_Radius = _orignalRadius;
+
+        _freeLookCam.m_Orbits[0].m_Height = _orignalHeight2;
+        _freeLookCam.m_Orbits[0].m_Radius = _orignalRadius2;
 
         _freeLookCam.m_XAxis.Value = 0;
         _freeLookCam.m_XAxis.m_InputAxisValue = 0;

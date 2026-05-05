@@ -166,7 +166,7 @@ public class GhostView : MonoBehaviour
             if (!IsBlockedAhead(directions[i]))
             {
                 //if (directions[i] == -currentDirection || directions[i] == currentDirection) continue;
-                if (directions[i] == -currentDirection) continue;
+                if ( _isInChangeDirectionTriggerCooldown && directions[i] == -currentDirection) continue;
 
                 validDirections[validCount] = directions[i];
                 validCount++;

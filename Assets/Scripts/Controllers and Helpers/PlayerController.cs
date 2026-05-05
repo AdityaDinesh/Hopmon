@@ -53,6 +53,7 @@ public class PlayerController : MonoBehaviour
         get { return _isDead; }
     }
     private bool _isDead;
+    private bool _shouldFixInputGlitch;
 
     private float _moveTimer;
     private float _coolDownTimer;
@@ -61,6 +62,7 @@ public class PlayerController : MonoBehaviour
     private float horizontal;
     private float vertical;
     private float _flyCrystalTimer;
+    private float _shouldFixInputTimer;
 
     private Vector3 _crystalStackOffset;
     private Vector3 move;
@@ -94,6 +96,17 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         if (_isDead) return;
+
+        if(_shouldFixInputGlitch)
+        {
+            _shouldFixInputTimer += Time.deltaTime;
+
+            if(_shouldFixInputTimer > 0.5f)
+            {
+                _shouldFixInputTimer = 0;
+                _shouldFixInputGlitch = false;
+            }
+        }
 
         // PLayer is Moving
         if (_isMoving)
@@ -165,7 +178,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // Take inputs if player is not moving, in cooldown, camera is not rotating or in pause mode
-        if(!_isMoving && !_isInCooldown && !CameraController.Instance.IsMoving && GameplayController.Instance.CurrentGameState != GameplayController.GameState.Pause)
+        if(!_shouldFixInputGlitch && !_isDead && !_isMoving && !_isInCooldown && !CameraController.Instance.IsMoving && GameplayController.Instance.CurrentGameState != GameplayController.GameState.Pause)
         {
             horizontal = VirtualJoystick.GetAxis("Horizontal", 0);
             vertical = VirtualJoystick.GetAxis("Vertical", 0);
@@ -339,6 +352,13 @@ public class PlayerController : MonoBehaviour
         _animator.Rebind();
         _isDead = false;
         _isMoving = false;
+        _canFlyCrystal = false;
+
+        _shouldFixInputGlitch = true;
+        _shouldFixInputTimer = 0f;
+
+        horizontal = 0f;
+        vertical = 0f;
 
         // Reset Rotation
         Vector3 rot = _transform.eulerAngles;
