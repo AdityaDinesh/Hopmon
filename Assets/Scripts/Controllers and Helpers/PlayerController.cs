@@ -63,6 +63,7 @@ public class PlayerController : MonoBehaviour
     private float vertical;
     private float _flyCrystalTimer;
     private float _shouldFixInputTimer;
+    private float _originalMoveSpeed;
 
     private Vector3 _crystalStackOffset;
     private Vector3 move;
@@ -91,6 +92,7 @@ public class PlayerController : MonoBehaviour
         _crystalTransformList = new List<Transform>();
         _crystalViewList = new List<CrystalView>();
         _activeFlyingCrystalTransform = null;
+        _originalMoveSpeed = _speed;
     }
 
     void Update()
@@ -170,6 +172,7 @@ public class PlayerController : MonoBehaviour
                         _crystalStackOffset -= new Vector3(0f, _crystalStackYOffset, 0f);
 
                         LevelPrefabController.Instance.ReleaseCrystal();
+                        SetMoveSpeed();
                     }
 
                     _flyCrystalTimer = 0f;
@@ -259,6 +262,8 @@ public class PlayerController : MonoBehaviour
         {
             _isMoving = true;
             _moveTimer = 0f;
+            _maxMoveTime = 1f / _speed;
+            _animator.speed = _speed - 0.5f;
             _animator.SetTrigger("jump");
         }
 
@@ -341,6 +346,31 @@ public class PlayerController : MonoBehaviour
         _crystalStackOffset += new Vector3(0f, _crystalStackYOffset, 0f);
 
         _crystalViewList.Add(crystalView);
+
+        SetMoveSpeed();
+    }
+
+    public void SetMoveSpeed()
+    {
+        Debug.Log("Crystal Count : " + _crystalTransformList.Count);
+
+        if (_crystalTransformList.Count >= 8 && _speed != (_originalMoveSpeed - 1f))
+        {
+            _speed = _originalMoveSpeed - 1;
+            return;
+        }
+
+        if ((_crystalTransformList.Count >= 4 && _crystalTransformList.Count < 8) && _speed != (_originalMoveSpeed - 0.5f))
+        {
+            _speed = _originalMoveSpeed - 0.5f;
+            return;
+        }
+
+        if (_crystalTransformList.Count < 4 && _speed != _originalMoveSpeed)
+        {
+            _speed = _originalMoveSpeed;
+            return;
+        }
     }
 
     public void ResetPlayer()
@@ -353,6 +383,7 @@ public class PlayerController : MonoBehaviour
         _isDead = false;
         _isMoving = false;
         _canFlyCrystal = false;
+        _speed = _originalMoveSpeed;
 
         _shouldFixInputGlitch = true;
         _shouldFixInputTimer = 0f;
