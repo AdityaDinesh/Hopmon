@@ -22,6 +22,13 @@ public class HopmonFireballView : PoolObject
 
     private void Update()
     {
+        if(PlayerController.Instance.IsDead && !_isDead && !_canReturnToPool && _gameObject.activeInHierarchy)
+        {
+            _isDead = true;
+            _canReturnToPool = false;
+            ReturnToPool(_gameObject);
+        }
+
         if(_canReturnToPool)
         {
             _returnToPoolTimer += Time.deltaTime;
@@ -41,7 +48,7 @@ public class HopmonFireballView : PoolObject
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Obstacle") || other.CompareTag("Enemy"))
+        if(other.CompareTag("Obstacle") || other.CompareTag("Enemy") || other.CompareTag("Bound"))
         {
             if (_canReturnToPool || _isDead) return;
 
