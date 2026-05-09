@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4662365431705766319}
   - component: {fileID: 8564933050826589646}
   - component: {fileID: 8337317786340743922}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Fireball Particle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4855,7 +4855,7 @@ GameObject:
   - component: {fileID: 2314540117938977768}
   - component: {fileID: 3353063838927318104}
   - component: {fileID: 260762390795938403}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Hopmon Fireball
   m_TagString: Fireball
   m_Icon: {fileID: 0}

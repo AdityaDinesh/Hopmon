@@ -291,7 +291,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2809999407346402480}
   - component: {fileID: 6093531314890450393}
-  - component: {fileID: 8439231941443625963}
   m_Layer: 0
   m_Name: Menu Level 2
   m_TagString: Untagged
@@ -329,20 +328,6 @@ Grid:
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 1
---- !u!114 &8439231941443625963
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4199723368085275064}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba82b5e6cc8c538478dc5e3c08b2b45e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _playerSpawn: {fileID: 0}
-  _totalCrystals: 4
 --- !u!1 &5841187070043730936
 GameObject:
   m_ObjectHideFlags: 0

@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 1420545573276301509}
   - component: {fileID: 8519368787819167518}
   - component: {fileID: 4703089006086326133}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Canon Fireball
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -37989,7 +37989,7 @@ GameObject:
   - component: {fileID: 4950287475323546231}
   - component: {fileID: 753198124477145657}
   - component: {fileID: 5598923149433548579}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Canon Fireball Trail
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 1013004317450747321}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0.0000029504295}
-  m_LocalPosition: {x: 0, y: -0.3, z: 0}
+  m_LocalPosition: {x: 0, y: -0.367, z: 0}
   m_LocalScale: {x: 1.031087, y: 0.114356525, z: 1.031087}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6577,7 +6577,7 @@ MonoBehaviour:
   changeDirectionInterval: {x: 3, y: 5}
   wallLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 576
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 256
