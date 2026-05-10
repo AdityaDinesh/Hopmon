@@ -22,7 +22,8 @@ public class CanonFireballView : PoolObject
 
     private void Update()
     {
-        if (PlayerController.Instance.IsDead && !_isDead && !_canReturnToPool && _gameObject.activeInHierarchy)
+        if (PlayerController.Instance.IsDead || (GameplayController.Instance.CurrentGameState == GameplayController.GameState.LevelEnd) 
+            && !_isDead && !_canReturnToPool && _gameObject.activeInHierarchy)
         {
             _isDead = true;
             _canReturnToPool = false;
