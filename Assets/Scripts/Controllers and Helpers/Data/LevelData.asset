@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: LevelData
   m_EditorClassIdentifier: 
   totalLevels: 11
-  unlockedLevels: 6
+  unlockedLevels: 8

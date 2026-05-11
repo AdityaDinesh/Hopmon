@@ -147,6 +147,8 @@ public class TotemView : MonoBehaviour
         Move();
         RotateBody();
         Debug.DrawRay(_transform.position, currentDirection * wallCheckDistance, Color.red);
+        Debug.DrawRay(_transform.position, Quaternion.AngleAxis(-30f, Vector3.up) * currentDirection * wallCheckDistance, Color.red);
+        Debug.DrawRay(_transform.position, Quaternion.AngleAxis(30f, Vector3.up) * currentDirection * wallCheckDistance, Color.red);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -212,6 +214,10 @@ public class TotemView : MonoBehaviour
     {
         Vector3 origin = _transform.position;
 
+        // Precompute rotated directions (cheap)
+        Vector3 leftDir = Quaternion.AngleAxis(-30f, Vector3.up) * dir;
+        Vector3 rightDir = Quaternion.AngleAxis(30f, Vector3.up) * dir;
+
         //Ray ray = new Ray(_transform.position, dir);
         //return Physics.Raycast(ray, wallCheckDistance, wallLayer);
 
@@ -224,6 +230,20 @@ public class TotemView : MonoBehaviour
 
         if (Physics.Raycast(origin, dir, wallCheckDistance, wallLayer))
             return true;
+
+        // Left 30°
+        if (Physics.Raycast(origin, leftDir, wallCheckDistance, obstacleLayer))
+        {
+            currentDirection *= -1;
+            return true;
+        }
+
+        // Right 30°
+        if (Physics.Raycast(origin, rightDir, wallCheckDistance, obstacleLayer))
+        {
+            currentDirection *= -1;
+            return true;
+        }
 
         return false;
     }
