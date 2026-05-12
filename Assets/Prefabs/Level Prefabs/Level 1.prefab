@@ -64,7 +64,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerSpawn: {fileID: 5799780141866319843}
-  _totalCrystals: 1
+  _totalCrystals: 4
 --- !u!1 &1956980956011368028
 GameObject:
   m_ObjectHideFlags: 0
@@ -5381,7 +5381,7 @@ PrefabInstance:
     - target: {fileID: 1311205624772817876, guid: a18d261c0bde39d49afeeafd85a52237,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.45
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 1311205624772817876, guid: a18d261c0bde39d49afeeafd85a52237,
         type: 3}
@@ -5455,7 +5455,7 @@ PrefabInstance:
     - target: {fileID: 1311205624772817876, guid: a18d261c0bde39d49afeeafd85a52237,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.45
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 1311205624772817876, guid: a18d261c0bde39d49afeeafd85a52237,
         type: 3}
@@ -18052,7 +18052,7 @@ PrefabInstance:
     - target: {fileID: 1311205624772817876, guid: a18d261c0bde39d49afeeafd85a52237,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.45
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 1311205624772817876, guid: a18d261c0bde39d49afeeafd85a52237,
         type: 3}
@@ -20986,7 +20986,7 @@ PrefabInstance:
     - target: {fileID: 1311205624772817876, guid: a18d261c0bde39d49afeeafd85a52237,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.45
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 1311205624772817876, guid: a18d261c0bde39d49afeeafd85a52237,
         type: 3}

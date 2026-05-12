@@ -232,6 +232,11 @@ public class GhostView : MonoBehaviour
         }
     }
 
+    public void PlayExplosionParticle()
+    {
+        PoolController.Instance.SpawnFromPool("Explosion", _transform.position, Quaternion.identity);
+    }
+
     // Round up decimal upto mentioned decimal point
     private float RoundUpToDecimal(float number, int numDecimalPlaces)
     {

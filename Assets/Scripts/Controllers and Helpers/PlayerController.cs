@@ -54,6 +54,7 @@ public class PlayerController : MonoBehaviour
     }
     private bool _isDead;
     private bool _shouldFixInputGlitch;
+    private bool _canBoost;
 
     private float _moveTimer;
     private float _coolDownTimer;
@@ -67,6 +68,7 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 _crystalStackOffset;
     private Vector3 move;
+    private Vector3 boostMoveDirection;
 
     private void Awake()
     {
@@ -134,6 +136,37 @@ public class PlayerController : MonoBehaviour
                 float newZ = RoundUpToDecimal(_transform.position.z, 1);
                 _transform.position = new Vector3(newX, _transform.position.y, newZ);
                 //_transform.position = new Vector3(newX, _transform.position.y, _transform.position.z);
+
+                if (_speed > _originalMoveSpeed && !_canBoost)
+                {
+                    SetMoveSpeed();
+                    _animator.speed = _speed - 0.5f;
+                    _animator.SetTrigger("idle");
+                    _animator.ResetTrigger("slide");
+
+                    Debug.Log("idle called");
+                }
+
+                if (_canBoost)
+                {
+                    _canBoost = false;
+                    _speed = _originalMoveSpeed + 5f;
+                    _maxMoveTime = 1f / _speed;
+                    _animator.speed = _speed - 0.5f;
+                    _isMoving = true;
+                    move = boostMoveDirection;
+                    _isInCooldown = false;
+                    _animator.SetTrigger("slide");
+
+                    if (move != Vector3.zero)
+                    {
+                        Quaternion rot = Quaternion.LookRotation(move);
+                        _transform.rotation = Quaternion.Slerp(_transform.rotation, rot, 10000000f * Time.deltaTime);
+                    }
+
+                    return;
+                }
+
             }
         }
 
@@ -281,6 +314,11 @@ public class PlayerController : MonoBehaviour
         {
             OnPlayerDeath();
         }
+
+        if(other.CompareTag("Boost") && !_canBoost)
+        {
+            _canBoost = true;
+        }
     }
 
     private void OnTriggerStay(Collider other)
@@ -301,6 +339,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void SetBoostMoveDirection(Vector3 boostDirection)
+    {
+        if (boostDirection == boostMoveDirection) return;
+
+        Debug.Log("Boost Move Direction : " + boostMoveDirection);
+
+        boostMoveDirection = boostDirection;
+    }
+
     public void OnPlayerDeath()
     {
         _isDead = true;
@@ -310,6 +357,7 @@ public class PlayerController : MonoBehaviour
             _crystalViewList[i].Scatter();
         }
 
+        _animator.speed = _originalMoveSpeed - 0.5f;
         _animator.SetTrigger("dead");
         CameraController.Instance.StartLevelEndCameraMovement(true);
     }
@@ -325,6 +373,11 @@ public class PlayerController : MonoBehaviour
         }
 
         UserInterfaceController.Instance.SetActiveUI(UserInterfaceController.UIState.Gameplay);
+    }
+
+    public void PlayExplosionParticle()
+    {
+        PoolController.Instance.SpawnFromPool("Explosion", _transform.position, Quaternion.identity);
     }
 
     public void ShootFireball()
@@ -387,6 +440,8 @@ public class PlayerController : MonoBehaviour
 
         _shouldFixInputGlitch = true;
         _shouldFixInputTimer = 0f;
+
+        _canBoost = false;
 
         horizontal = 0f;
         vertical = 0f;

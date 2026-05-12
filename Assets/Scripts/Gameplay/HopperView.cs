@@ -157,6 +157,11 @@ public class HopperView : MonoBehaviour
         return false;
     }
 
+    public void PlayExplosionParticle()
+    {
+        PoolController.Instance.SpawnFromPool("Explosion", _transform.position, Quaternion.identity);
+    }
+
     private float RoundUpToDecimal(float number, int numDecimalPlaces)
     {
         double multiplier = Math.Pow(10, numDecimalPlaces);

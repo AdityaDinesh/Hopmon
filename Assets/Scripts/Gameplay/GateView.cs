@@ -15,26 +15,20 @@ public class GateView : MonoBehaviour
 
         _Animator = GetComponent<Animator>();
     }
-
-    //// Start is called before the first frame update
-    //void Start()
-    //{
         
-    //}
-
-    //// Update is called once per frame
-    //void Update()
-    //{
-        
-    //}
-
     private void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("Fireball"))
         {
             _isDestroyed = true;
             _Animator.SetTrigger("destroy");
+
+            PoolController.Instance.SpawnFromPool("Fireball", _transform.position, Quaternion.identity);
         }
+    }
+    public void PlayExplosionParticle()
+    {
+        PoolController.Instance.SpawnFromPool("Explosion", _transform.position, Quaternion.identity);
     }
 
 }

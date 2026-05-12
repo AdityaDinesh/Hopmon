@@ -49,7 +49,7 @@ public class HopmonFireballView : PoolObject
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Obstacle") || other.CompareTag("Enemy") || other.CompareTag("Bound"))
+        if(other.CompareTag("Obstacle") || other.CompareTag("Bound"))
         {
             if (_canReturnToPool || _isDead) return;
 
@@ -58,6 +58,20 @@ public class HopmonFireballView : PoolObject
             _canReturnToPool = true;
             _returnToPoolTimer = 0f;
         }
+
+        if (other.CompareTag("Enemy"))
+        {
+            if (_canReturnToPool || _isDead) return;
+
+            // Particles
+
+            _canReturnToPool = true;
+            _returnToPoolTimer = 0f;
+
+            PoolController.Instance.SpawnFromPool("Fireball", _transform.position, Quaternion.identity);
+        }
+
+
     }
 
     public override void Setup()
