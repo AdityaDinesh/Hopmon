@@ -25,9 +25,11 @@ public class CanonFireballView : PoolObject
         if (PlayerController.Instance.IsDead || (GameplayController.Instance.CurrentGameState == GameplayController.GameState.LevelEnd) 
             && !_isDead && !_canReturnToPool && _gameObject.activeInHierarchy)
         {
-            _isDead = true;
-            _canReturnToPool = false;
-            ReturnToPool(_gameObject);
+            _canReturnToPool = true;
+            _returnToPoolTimer = -0.25f;
+
+            //_canReturnToPool = false;
+            //ReturnToPool(_gameObject);
         }
 
         if (_canReturnToPool)
@@ -63,6 +65,8 @@ public class CanonFireballView : PoolObject
     public override void Setup()
     {
         base.Setup();
+
+        if (_canReturnToPool) return;
 
         _isDead = false;
         _canReturnToPool = false;
