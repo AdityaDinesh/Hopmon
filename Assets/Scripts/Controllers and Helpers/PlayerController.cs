@@ -55,6 +55,7 @@ public class PlayerController : MonoBehaviour
     private bool _isDead;
     private bool _shouldFixInputGlitch;
     private bool _canBoost;
+    private bool _isBoosting;
 
     private float _moveTimer;
     private float _coolDownTimer;
@@ -143,6 +144,7 @@ public class PlayerController : MonoBehaviour
                     _animator.speed = _speed - 0.5f;
                     _animator.SetTrigger("idle");
                     _animator.ResetTrigger("slide");
+                    _isBoosting = false;
 
                     Debug.Log("idle called");
                 }
@@ -150,6 +152,7 @@ public class PlayerController : MonoBehaviour
                 if (_canBoost)
                 {
                     _canBoost = false;
+                    _isBoosting = true;
                     _speed = _originalMoveSpeed + 5f;
                     _maxMoveTime = 1f / _speed;
                     _animator.speed = _speed - 0.5f;
@@ -163,6 +166,8 @@ public class PlayerController : MonoBehaviour
                         Quaternion rot = Quaternion.LookRotation(move);
                         _transform.rotation = Quaternion.Slerp(_transform.rotation, rot, 10000000f * Time.deltaTime);
                     }
+
+                    Debug.Log("Speed : " + _speed + ", Original Speed : " + _originalMoveSpeed + ", Can Boost : " + _canBoost);
 
                     return;
                 }
@@ -343,9 +348,9 @@ public class PlayerController : MonoBehaviour
     {
         if (boostDirection == boostMoveDirection) return;
 
-        Debug.Log("Boost Move Direction : " + boostMoveDirection);
-
         boostMoveDirection = boostDirection;
+
+        Debug.Log("Boost Move Direction : " + boostMoveDirection);
     }
 
     public void OnPlayerDeath()
@@ -400,6 +405,8 @@ public class PlayerController : MonoBehaviour
 
         _crystalViewList.Add(crystalView);
 
+        if (_isBoosting) return;
+
         SetMoveSpeed();
     }
 
@@ -442,6 +449,7 @@ public class PlayerController : MonoBehaviour
         _shouldFixInputTimer = 0f;
 
         _canBoost = false;
+        _isBoosting = false;
 
         horizontal = 0f;
         vertical = 0f;

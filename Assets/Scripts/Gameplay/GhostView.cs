@@ -16,6 +16,7 @@ public class GhostView : MonoBehaviour
     private float timer;
     private float currentChangeDirectionInterval;
     private float changeDirectionTriggerCooldownTimer;
+    private float _idleTimer;
 
     //private float _changeDirectionOffset = 0f;
 
@@ -25,6 +26,7 @@ public class GhostView : MonoBehaviour
     //private bool _canChangeDirection;
     private bool _isDead;
     private bool _isInChangeDirectionTriggerCooldown;
+    private bool _canMove;
 
     private static readonly Vector3[] directions = new Vector3[]
     {
@@ -48,6 +50,7 @@ public class GhostView : MonoBehaviour
     {
         PickValidDirection();
         currentChangeDirectionInterval = Random.Range(changeDirectionInterval.x, changeDirectionInterval.y);
+        _canMove = true;
     }
 
     private void Update()
@@ -153,6 +156,19 @@ public class GhostView : MonoBehaviour
 
     private void Move()
     {
+        if(!_canMove)
+        {
+            _idleTimer += Time.deltaTime;
+
+            if(_idleTimer > 0.25f)
+            {
+                _idleTimer = 0f;
+                _canMove = true;
+            }
+
+            return;
+        }
+
         _transform.position += currentDirection * speed * Time.deltaTime;
     }
 
@@ -182,6 +198,12 @@ public class GhostView : MonoBehaviour
         {
             // Fallback (rare case: surrounded)
             currentDirection = -currentDirection;
+
+            if(IsBlockedAhead(currentDirection))
+            {
+                _canMove = false;
+                _idleTimer = 0f;
+            }
         }
     }
 

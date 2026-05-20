@@ -21,6 +21,8 @@ public class BoostTileView : MonoBehaviour
             Vector3 boostDirectionVector = _destinationPoint.position - _transform.position;
             boostDirectionVector.y = 0;
 
+            Debug.Log("Boost Tile Set Direction : " + boostDirectionVector);
+
             PlayerController.Instance.SetBoostMoveDirection(boostDirectionVector);
             _setDestinationPointOnPlayer = true;
         }
@@ -30,7 +32,7 @@ public class BoostTileView : MonoBehaviour
     {
         if (other.CompareTag("Player") && _setDestinationPointOnPlayer)
         {
-            _setDestinationPointOnPlayer = false;
+            //_setDestinationPointOnPlayer = false;
         }
     }
 }

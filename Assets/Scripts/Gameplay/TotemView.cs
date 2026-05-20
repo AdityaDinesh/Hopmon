@@ -21,6 +21,8 @@ public class TotemView : MonoBehaviour
     private float timer;
     private float currentChangeDirectionInterval;
     private float changeDirectionTriggerCooldownTimer;
+    private float _idleTimer;
+
     //private float _changeDirectionOffset = 0f;
 
     private Transform _transform;
@@ -31,6 +33,7 @@ public class TotemView : MonoBehaviour
     //private bool _canChangeDirection;
     private bool _isDead;
     private bool _isInChangeDirectionTriggerCooldown;
+    private bool _canMove;
 
     private static readonly Vector3[] directions = new Vector3[]
     {
@@ -54,6 +57,7 @@ public class TotemView : MonoBehaviour
     {
         PickValidDirection();
         currentChangeDirectionInterval = Random.Range(changeDirectionInterval.x, changeDirectionInterval.y);
+        _canMove = true;
     }
 
     private void Update()
@@ -178,6 +182,19 @@ public class TotemView : MonoBehaviour
 
     private void Move()
     {
+        if (!_canMove)
+        {
+            _idleTimer += Time.deltaTime;
+
+            if (_idleTimer > 0.25f)
+            {
+                _idleTimer = 0f;
+                _canMove = true;
+            }
+
+            return;
+        }
+
         _transform.position += currentDirection * speed * Time.deltaTime;
     }
 
@@ -207,6 +224,12 @@ public class TotemView : MonoBehaviour
         {
             // Fallback (rare case: surrounded)
             currentDirection = -currentDirection;
+
+            if (IsWallAhead(currentDirection))
+            {
+                _canMove = false;
+                _idleTimer = 0f;
+            }
         }
     }
 
