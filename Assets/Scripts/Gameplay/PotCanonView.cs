@@ -21,6 +21,8 @@ public class PotCanonView : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GameplayController.Instance.CurrentGameState == GameplayController.GameState.Menu) return;
+
         _shootTimer += Time.deltaTime;
 
         if(_shootTimer > _shootRate)
@@ -32,6 +34,7 @@ public class PotCanonView : MonoBehaviour
             Quaternion rotation = Quaternion.LookRotation(_transform.up);
 
             PoolController.Instance.SpawnFromPool("PotCanonFireball", spawnPoint.position, rotation);
+            AudioController.Instance.PlaySFX(SfxSoundType.PotCanonFireball, _transform.position);
         }
     }
 

@@ -44,6 +44,7 @@ public class LevelSelectUserInterface : UserInterface
         {
             currentLevel++;
             UpdateLevel();
+            AudioController.Instance.PlaySFX(SfxSoundType.UIChange);
         }
     }
     public void PreviousLevel()
@@ -52,6 +53,7 @@ public class LevelSelectUserInterface : UserInterface
         {
             currentLevel--;
             UpdateLevel();
+            AudioController.Instance.PlaySFX(SfxSoundType.UIChange);
         }
     }
 
@@ -74,6 +76,7 @@ public class LevelSelectUserInterface : UserInterface
     {
         _canStartLevel = true;
         UserInterfaceController.Instance.SetActiveUI(UserInterfaceController.UIState.Gameplay);
+        AudioController.Instance.PlaySFX(SfxSoundType.UISelect);
     }
 
     public override void Show()

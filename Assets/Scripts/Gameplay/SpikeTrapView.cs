@@ -69,6 +69,7 @@ public class SpikeTrapView : MonoBehaviour
 
                     currentState = TrapState.WaitingBottom;
                     timer = waitOnGround;
+                    AudioController.Instance.PlaySFX(SfxSoundType.SpikeTrap, _bodyTransform.position);
                 }
 
                 break;

@@ -108,6 +108,7 @@ public class HopperView : MonoBehaviour
             _isDead = true;
             Vector3 lookDirection = other.ClosestPoint(_transform.position) - _transform.position;
             _transform.rotation = Quaternion.LookRotation(lookDirection);
+            AudioController.Instance.PlaySFX(SfxSoundType.FireballHit, _transform.position);
         }
     }
 
@@ -160,6 +161,7 @@ public class HopperView : MonoBehaviour
     public void PlayExplosionParticle()
     {
         PoolController.Instance.SpawnFromPool("Explosion", _transform.position, Quaternion.identity);
+        AudioController.Instance.PlaySFX(SfxSoundType.Explosion, _transform.position);
     }
 
     private float RoundUpToDecimal(float number, int numDecimalPlaces)

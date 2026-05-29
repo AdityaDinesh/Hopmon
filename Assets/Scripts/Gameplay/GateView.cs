@@ -23,12 +23,14 @@ public class GateView : MonoBehaviour
             _isDestroyed = true;
             _Animator.SetTrigger("destroy");
 
-            PoolController.Instance.SpawnFromPool("Fireball", _transform.position, Quaternion.identity);
+            //PoolController.Instance.SpawnFromPool("Fireball", _transform.position, Quaternion.identity);
+            AudioController.Instance.PlaySFX(SfxSoundType.FireballHit, _transform.position);
         }
     }
     public void PlayExplosionParticle()
     {
         PoolController.Instance.SpawnFromPool("Explosion", _transform.position, Quaternion.identity);
+        AudioController.Instance.PlaySFX(SfxSoundType.Explosion, _transform.position);
     }
 
 }

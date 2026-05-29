@@ -107,6 +107,7 @@ public class UserInterfaceController : MonoBehaviour
     {
         _currentUIState = (UIState)uiStateID;
         _loadingScreenAnimator.SetTrigger("show");
+        AudioController.Instance.PlaySFX(SfxSoundType.UISelect); //
     }
 
     public void ShowUI()
@@ -119,7 +120,7 @@ public class UserInterfaceController : MonoBehaviour
         if(_currentUIState == UIState.MainMenu)
         {
             _loadingScreenAnimator.ResetTrigger("show");
-            
+
             //if(GameplayController.Instance.CurrentGameState == GameplayController.GameState.GameOver)
             //{
             //    PlayerController.Instance.gameObject.SetActive(false);
@@ -161,6 +162,7 @@ public class UserInterfaceController : MonoBehaviour
         _isPaused = true;
         GameplayController.Instance.SetGameState(GameplayController.GameState.Pause);
         SetInputUI(true);
+        AudioController.Instance.PlaySFX(SfxSoundType.UISelect);
     }
 
     public void ResumeGame()
@@ -172,6 +174,7 @@ public class UserInterfaceController : MonoBehaviour
         _isPaused = false;
         GameplayController.Instance.SetGameState(GameplayController.GameState.Playing);
         SetInputUI(false);
+        AudioController.Instance.PlaySFX(SfxSoundType.UISelect);
     }
 
     public void EndGame()

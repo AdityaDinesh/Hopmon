@@ -48,6 +48,7 @@ public class GameplayUserInterface : UserInterface
             iconImage.color = _activeIconColor;
             cooldownFillImage.fillAmount = 1f;
             shootButtonAnimator.SetTrigger("pop");
+            AudioController.Instance.PlaySFX(SfxSoundType.FireReady);
         }
     }
 

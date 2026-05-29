@@ -18,6 +18,7 @@ public class CanonView : MonoBehaviour
         {
             _shootTimer = 0f;
             PoolController.Instance.SpawnFromPool("CanonFireball", _firePointTransform.position, _firePointTransform.rotation);
+            AudioController.Instance.PlaySFX(SfxSoundType.CanonFireball, _firePointTransform.position);
         }
     }
 }

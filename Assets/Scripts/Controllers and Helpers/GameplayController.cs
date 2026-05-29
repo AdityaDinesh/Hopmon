@@ -40,7 +40,8 @@ public class GameplayController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _currentGameState = GameState.Menu;
+        AudioController.Instance.PlayMusic(BgmSoundType.MainMenu);
+        SetGameState(GameState.Menu);
         CameraController.Instance.SetCamera(CameraController.CameraType.MainMenu);
         UserInterfaceController.Instance.HideAllUI();
         UserInterfaceController.Instance.SetActiveUI(UserInterfaceController.UIState.MainMenu);
@@ -53,12 +54,17 @@ public class GameplayController : MonoBehaviour
 
         _currentGameState = gameState;
 
-        if(_currentGameState == GameState.Playing)
+        if (_currentGameState == GameState.Menu)
         {
-            
+            AudioController.Instance.PlayMusic(BgmSoundType.MainMenu);
         }
 
-        if(_currentGameState == GameState.LevelEnd)
+        if (_currentGameState == GameState.Playing)
+        {
+            AudioController.Instance.PlayMusic(BgmSoundType.World1);
+        }
+
+        if (_currentGameState == GameState.LevelEnd)
         {
             
         }
@@ -70,7 +76,7 @@ public class GameplayController : MonoBehaviour
         PlayerController.Instance.ResetPlayer();
         CameraController.Instance.SetCamera(CameraController.CameraType.GamePlay);
         LevelPrefabController.Instance.SetLevelData(levelNumber);
-        _currentGameState = GameState.Playing;
+        SetGameState(GameState.Playing);
     }
 
     public void GameOver()

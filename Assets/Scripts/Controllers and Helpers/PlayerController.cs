@@ -70,6 +70,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 _crystalStackOffset;
     private Vector3 move;
     private Vector3 boostMoveDirection;
+    private Vector3 targetMovePosition;
 
     private void Awake()
     {
@@ -121,22 +122,20 @@ public class PlayerController : MonoBehaviour
                 CameraController.Instance.SetLookAtParameter(null);
             }
 
-            _moveTimer += Time.deltaTime;
-            _transform.position += move.normalized * _speed * Time.deltaTime;
+            _transform.position = Vector3.MoveTowards(_transform.position, targetMovePosition, _speed * Time.deltaTime);
 
-            if (_moveTimer > _maxMoveTime)
+            // Snap exactly to target
+            if (Vector3.Distance(_transform.position, targetMovePosition) < 0.001f)
             {
-                _moveTimer = 0f;
+                _transform.position = targetMovePosition;
+                float newX = RoundUpToDecimal(_transform.position.x, 1);
+                float newZ = RoundUpToDecimal(_transform.position.z, 1);
+                _transform.position = new Vector3(newX, _transform.position.y, newZ);
                 _isMoving = false;
                 horizontal = 0f;
                 vertical = 0f;
                 _isInCooldown = true;
                 _coolDownTimer = 0f;
-
-                float newX = RoundUpToDecimal(_transform.position.x, 1);
-                float newZ = RoundUpToDecimal(_transform.position.z, 1);
-                _transform.position = new Vector3(newX, _transform.position.y, newZ);
-                //_transform.position = new Vector3(newX, _transform.position.y, _transform.position.z);
 
                 if (_speed > _originalMoveSpeed && !_canBoost)
                 {
@@ -154,10 +153,11 @@ public class PlayerController : MonoBehaviour
                     _canBoost = false;
                     _isBoosting = true;
                     _speed = _originalMoveSpeed + 5f;
-                    _maxMoveTime = 1f / _speed;
                     _animator.speed = _speed - 0.5f;
                     _isMoving = true;
                     move = boostMoveDirection;
+                    targetMovePosition = _transform.position + move;
+
                     _isInCooldown = false;
                     _animator.SetTrigger("slide");
 
@@ -171,12 +171,68 @@ public class PlayerController : MonoBehaviour
 
                     return;
                 }
-
             }
+
+            #region Old Move Code
+
+            //_moveTimer += Time.deltaTime;
+            //_transform.position += move.normalized * _speed * Time.deltaTime;
+
+            //if (_moveTimer > _maxMoveTime)
+            //{
+            //    _moveTimer = 0f;
+            //    _isMoving = false;
+            //    horizontal = 0f;
+            //    vertical = 0f;
+            //    _isInCooldown = true;
+            //    _coolDownTimer = 0f;
+
+            //    float newX = RoundUpToDecimal(_transform.position.x, 1);
+            //    float newZ = RoundUpToDecimal(_transform.position.z, 1);
+            //    _transform.position = new Vector3(newX, _transform.position.y, newZ);
+            //    //_transform.position = new Vector3(newX, _transform.position.y, _transform.position.z);
+
+            //    if (_speed > _originalMoveSpeed && !_canBoost)
+            //    {
+            //        SetMoveSpeed();
+            //        _animator.speed = _speed - 0.5f;
+            //        _animator.SetTrigger("idle");
+            //        _animator.ResetTrigger("slide");
+            //        _isBoosting = false;
+
+            //        Debug.Log("idle called");
+            //    }
+
+            //    if (_canBoost)
+            //    {
+            //        _canBoost = false;
+            //        _isBoosting = true;
+            //        _speed = _originalMoveSpeed + 5f;
+            //        _maxMoveTime = 1f / _speed;
+            //        _animator.speed = _speed - 0.5f;
+            //        _isMoving = true;
+            //        move = boostMoveDirection;
+            //        _isInCooldown = false;
+            //        _animator.SetTrigger("slide");
+
+            //        if (move != Vector3.zero)
+            //        {
+            //            Quaternion rot = Quaternion.LookRotation(move);
+            //            _transform.rotation = Quaternion.Slerp(_transform.rotation, rot, 10000000f * Time.deltaTime);
+            //        }
+
+            //        Debug.Log("Speed : " + _speed + ", Original Speed : " + _originalMoveSpeed + ", Can Boost : " + _canBoost);
+
+            //        return;
+            //    }
+
+            //}
+
+            #endregion
         }
 
         // Cooldown timer after moving
-        if(_isInCooldown)
+        if (_isInCooldown)
         {
             _coolDownTimer += Time.deltaTime;
 
@@ -202,6 +258,7 @@ public class PlayerController : MonoBehaviour
                         _animator.SetTrigger("fly");
                         CameraController.Instance.StartLevelEndCameraMovement();
                         GameplayController.Instance.SetGameState(GameplayController.GameState.LevelEnd);
+                        AudioController.Instance.PlaySFX(SfxSoundType.LevelEnd);
                     }
                     else
                     {
@@ -211,6 +268,7 @@ public class PlayerController : MonoBehaviour
 
                         LevelPrefabController.Instance.ReleaseCrystal();
                         SetMoveSpeed();
+                        AudioController.Instance.PlaySFX(SfxSoundType.CrystalFly);
                     }
 
                     _flyCrystalTimer = 0f;
@@ -303,6 +361,8 @@ public class PlayerController : MonoBehaviour
             _maxMoveTime = 1f / _speed;
             _animator.speed = _speed - 0.5f;
             _animator.SetTrigger("jump");
+            AudioController.Instance.PlaySFX(SfxSoundType.PlayerHop);
+            targetMovePosition = _transform.position + move;
         }
 
         // Rotate player to face movement
@@ -349,12 +409,12 @@ public class PlayerController : MonoBehaviour
         if (boostDirection == boostMoveDirection) return;
 
         boostMoveDirection = boostDirection;
-
-        Debug.Log("Boost Move Direction : " + boostMoveDirection);
     }
 
     public void OnPlayerDeath()
     {
+        if (_isDead) return;
+
         _isDead = true;
 
         for (int i = 0; i < _crystalViewList.Count; i++)
@@ -365,15 +425,18 @@ public class PlayerController : MonoBehaviour
         _animator.speed = _originalMoveSpeed - 0.5f;
         _animator.SetTrigger("dead");
         CameraController.Instance.StartLevelEndCameraMovement(true);
+        AudioController.Instance.StopMusic();
+        AudioController.Instance.PlaySFX(SfxSoundType.GameOver);
     }
 
     public void OnLevelEndAnimationFinish()
     {
-        _isLevelEnding = false;
+        //_isLevelEnding = false;
 
         if(_isDead)
         {
             UserInterfaceController.Instance.SetActiveUI(UserInterfaceController.UIState.MainMenu);
+            GameplayController.Instance.SetGameState(GameplayController.GameState.Menu);
             return;
         }
 
@@ -383,6 +446,7 @@ public class PlayerController : MonoBehaviour
     public void PlayExplosionParticle()
     {
         PoolController.Instance.SpawnFromPool("Explosion", _transform.position, Quaternion.identity);
+        AudioController.Instance.PlaySFX(SfxSoundType.Explosion);
     }
 
     public void ShootFireball()
@@ -392,6 +456,7 @@ public class PlayerController : MonoBehaviour
         PoolController.Instance.SpawnFromPool("HopmonFireball", _fireballAimTransform.position, _fireballAimTransform.rotation);
         _canShoot = false;
         _shootTimer = 0f;
+        AudioController.Instance.PlaySFX(SfxSoundType.PlayerShoot);
     }
 
     public void StackCrystal(Transform crystalTransform, CrystalView crystalView)
@@ -405,6 +470,8 @@ public class PlayerController : MonoBehaviour
 
         _crystalViewList.Add(crystalView);
 
+        AudioController.Instance.PlaySFX(SfxSoundType.CrystalCollect);
+
         if (_isBoosting) return;
 
         SetMoveSpeed();
@@ -412,8 +479,6 @@ public class PlayerController : MonoBehaviour
 
     public void SetMoveSpeed()
     {
-        Debug.Log("Crystal Count : " + _crystalTransformList.Count);
-
         if (_crystalTransformList.Count >= 8 && _speed != (_originalMoveSpeed - 1f))
         {
             _speed = _originalMoveSpeed - 1;

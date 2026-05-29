@@ -47,6 +47,8 @@ public class TotemView : MonoBehaviour
     private Vector3[] validDirections = new Vector3[4];
     private int validCount = 0;
 
+    private Vector3 targetMovePosition;
+
     private void Awake()
     {
         _transform = transform;
@@ -66,62 +68,40 @@ public class TotemView : MonoBehaviour
 
         timer += Time.deltaTime;
 
-        if (timer >= currentChangeDirectionInterval || IsWallAhead(currentDirection))
+        //if (timer >= currentChangeDirectionInterval || IsWallAhead(currentDirection))
+        //{
+        //    if (Mathf.Approximately(GetFirstDigitAfterDecimal(_transform.position.x), 5) && Mathf.Approximately(GetFirstDigitAfterDecimal(_transform.position.z), 5))
+        //    {
+        //        PickValidDirection();
+        //        timer = 0f;
+        //        currentChangeDirectionInterval = Random.Range(changeDirectionInterval.x, changeDirectionInterval.y);
+        //        float newX = RoundUpToDecimal(_transform.position.x, 1);
+        //        float newZ = RoundUpToDecimal(_transform.position.z, 1);
+        //        _transform.position = new Vector3(newX, _transform.position.y, newZ);
+
+        //        //Round up rotation values;
+
+        //        float snap = 90f;
+
+        //        Vector3 rot = _bodyTransform.eulerAngles;
+
+        //        rot.x = Mathf.Round(rot.x / snap) * snap;
+        //        rot.y = Mathf.Round(rot.y / snap) * snap;
+        //        rot.z = Mathf.Round(rot.z / snap) * snap;
+
+        //        _bodyTransform.eulerAngles = rot;
+        //    }
+        //}
+
+        if (Vector3.Distance(_transform.position, targetMovePosition) < 0.001f)
         {
-            #region Old Code
+            targetMovePosition = _transform.position + currentDirection;
 
-            //if(IsWallAhead(currentDirection))
-            //{
-            //    _changeDirectionOffset = 0f;
-            //}
-            //else
-            //{
-            //    _changeDirectionOffset = 1f;
-            //}
-            //Debug.Log("Offset : " + _changeDirectionOffset);
-            ////Debug.Log("Rounded x : " + RoundUpToDecimal(_transform.position.x, 1) + ", Rounded z :" + RoundUpToDecimal(_transform.position.z, 1));
-            //float newX = RoundUpToDecimal(_transform.position.x, 1);
-            //float newZ = RoundUpToDecimal(_transform.position.z, 1);
-
-            //if(newX != _transform.position.x && Mathf.Abs(_transform.position.x) >= Mathf.Abs(newX) + (Mathf.Sign(newX) * _changeDirectionOffset))
-            //{
-            //    _canChangeDirection = true;
-            //}
-            //else
-            //{
-            //    if (newZ != _transform.position.z && Mathf.Abs(_transform.position.z) >= Mathf.Abs(newZ) + (Mathf.Sign(newZ) * _changeDirectionOffset))
-            //    {
-            //        _canChangeDirection = true;
-            //    }
-            //}
-
-            //if(_canChangeDirection)
-            //{
-            //    PickValidDirection();
-            //    timer = 0f;
-            //    currentChangeDirectionInterval = Random.Range(changeDirectionInterval.x, changeDirectionInterval.y);
-            //    _canChangeDirection = false;
-            //    _transform.position = new Vector3(newX, _transform.position.y, newZ);
-            //}
-
-            //if(Mathf.Abs(_transform.position.x) >= Mathf.Abs(RoundUpToDecimal(_transform.position.x, 1)) && Mathf.Abs(_transform.position.z) >= Mathf.Abs(RoundUpToDecimal(_transform.position.z, 1)))
-            //if (Mathf.Abs(_transform.position.x) >= Mathf.Abs(RoundUpToDecimal(_transform.position.x, 1)) && Mathf.Abs(_transform.position.z) >= Mathf.Abs(RoundUpToDecimal(_transform.position.z, 1)))
-            //{
-            //    PickValidDirection();
-            //    timer = 0f;
-            //    currentChangeDirectionInterval = Random.Range(changeDirectionInterval.x, changeDirectionInterval.y);
-            //}
-
-            #endregion
-
-            if (Mathf.Approximately(GetFirstDigitAfterDecimal(_transform.position.x), 5) && Mathf.Approximately(GetFirstDigitAfterDecimal(_transform.position.z), 5))
+            if (timer >= currentChangeDirectionInterval || IsWallAhead(currentDirection))
             {
                 PickValidDirection();
                 timer = 0f;
                 currentChangeDirectionInterval = Random.Range(changeDirectionInterval.x, changeDirectionInterval.y);
-                float newX = RoundUpToDecimal(_transform.position.x, 1);
-                float newZ = RoundUpToDecimal(_transform.position.z, 1);
-                _transform.position = new Vector3(newX, _transform.position.y, newZ);
 
                 //Round up rotation values;
 
@@ -137,7 +117,7 @@ public class TotemView : MonoBehaviour
             }
         }
 
-        if(_isInChangeDirectionTriggerCooldown)
+        if (_isInChangeDirectionTriggerCooldown)
         {
             changeDirectionTriggerCooldownTimer += Time.deltaTime;
 
@@ -160,6 +140,7 @@ public class TotemView : MonoBehaviour
         if (other.CompareTag("Fireball"))
         {
             _health--;
+            AudioController.Instance.PlaySFX(SfxSoundType.FireballHit, _transform.position);
 
             if (_health >= 1)
             {
@@ -195,7 +176,9 @@ public class TotemView : MonoBehaviour
             return;
         }
 
-        _transform.position += currentDirection * speed * Time.deltaTime;
+        _transform.position = Vector3.MoveTowards(_transform.position, targetMovePosition, speed * Time.deltaTime);
+
+        //_transform.position += currentDirection * speed * Time.deltaTime;
     }
 
     private void PickValidDirection()
@@ -231,6 +214,8 @@ public class TotemView : MonoBehaviour
                 _idleTimer = 0f;
             }
         }
+
+        targetMovePosition = _transform.position + currentDirection;
     }
 
     private bool IsWallAhead(Vector3 dir)
@@ -293,6 +278,7 @@ public class TotemView : MonoBehaviour
     public void PlayExplosionParticle()
     {
         PoolController.Instance.SpawnFromPool("Explosion", _transform.position, Quaternion.identity);
+        AudioController.Instance.PlaySFX(SfxSoundType.Explosion, _transform.position);
     }
 
     // Round up decimal upto mentioned decimal point
