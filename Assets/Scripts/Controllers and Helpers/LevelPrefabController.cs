@@ -42,6 +42,10 @@ public class LevelPrefabController : MonoBehaviour
             // Optional: keep the object alive across scene loads
             DontDestroyOnLoad(this.gameObject);
         }
+
+        _levelData.unlockedLevels = PlayerPrefs.GetInt("unlockedLevels");
+
+        if (_levelData.unlockedLevels <= 0) _levelData.unlockedLevels = 1;
     }
 
     public void SetLevelData(int levelNumber)
@@ -60,6 +64,9 @@ public class LevelPrefabController : MonoBehaviour
     {
         _currentLevel++;
         Destroy(_currentLevelGameObject);
+
+        if (_currentLevel >= _levelData.totalLevels) return;
+
         _currentLevelGameObject = Instantiate(_levelPrefabList[_currentLevel], _levelLoadPositionTransform.position, _levelLoadPositionTransform.rotation);
         LevelPrefabData levelPrefabData = _currentLevelGameObject.GetComponent<LevelPrefabData>();
 
@@ -73,6 +80,7 @@ public class LevelPrefabController : MonoBehaviour
         if(_currentLevel >= _levelData.unlockedLevels)
         {
             _levelData.unlockedLevels++;
+            PlayerPrefs.SetInt("unlockedLevels", _levelData.unlockedLevels);
             Debug.Log("Unlocked Level Count : " + _levelData.unlockedLevels);
         }
     }
@@ -88,6 +96,15 @@ public class LevelPrefabController : MonoBehaviour
     {
         _totalCrystals--;
         _crystalNumberText.text = _totalCrystals.ToString("00");
+    }
+
+    public bool IsThisLastLevel()
+    {
+        Debug.Log("Current Level : " + _currentLevel + ", Total Levels : " + _levelData.totalLevels);
+
+        if (_currentLevel >= (_levelData.totalLevels - 1)) return true;
+
+        return false;
     }
 
     public void HideCurrentLevel()

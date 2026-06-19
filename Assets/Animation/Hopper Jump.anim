@@ -263,7 +263,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_IsActive
-    path: Shadow Sphere
+    path: EnemyAvoidanceTrigger
     classID: 1
     script: {fileID: 0}
     flags: 0
@@ -284,7 +284,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_IsActive
-    path: EnemyAvoidanceTrigger
+    path: Drop Shadow
     classID: 1
     script: {fileID: 0}
     flags: 0
@@ -360,7 +360,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 3579430731
+      path: 2109652135
       attribute: 2086281974
       script: {fileID: 0}
       typeID: 1
@@ -369,7 +369,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 2109652135
+      path: 3699724005
       attribute: 2086281974
       script: {fileID: 0}
       typeID: 1
@@ -876,27 +876,6 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 1
-        inSlope: Infinity
-        outSlope: Infinity
-        tangentMode: 103
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    attribute: m_IsActive
-    path: Shadow Sphere
-    classID: 1
-    script: {fileID: 0}
-    flags: 0
-  - serializedVersion: 2
-    curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
         value: 0
         inSlope: 0
         outSlope: 0
@@ -972,6 +951,27 @@ AnimationClip:
       m_RotationOrder: 4
     attribute: m_IsActive
     path: EnemyAvoidanceTrigger
+    classID: 1
+    script: {fileID: 0}
+    flags: 0
+  - serializedVersion: 2
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: Infinity
+        outSlope: Infinity
+        tangentMode: 103
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_IsActive
+    path: Drop Shadow
     classID: 1
     script: {fileID: 0}
     flags: 0

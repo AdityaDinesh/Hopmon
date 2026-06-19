@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using Terresquall;
+//using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
@@ -89,6 +90,8 @@ public class CameraController : MonoBehaviour
     {
         // Level End Camera movement
 
+        UserInterfaceController.Instance.ShowDebugText("Follow Camera LookAt : " + _freeLookCam.LookAt + ", Follow : " + _freeLookCam.Follow);
+
         if(_isLevelEnding)
         {
             var orbit = _freeLookCam.m_Orbits[1];
@@ -152,6 +155,22 @@ public class CameraController : MonoBehaviour
         // Recieve input to calculate in which direction camera should rotate
 
         _horizontal = VirtualJoystick.GetAxis("Horizontal", 1);
+
+        //if(Keyboard.current.aKey.isPressed && _horizontal == 0)
+        //{
+        //    _horizontal = -1;
+        //}
+
+        //if (Keyboard.current.dKey.isPressed && _horizontal == 0)
+        //{
+        //    _horizontal = 1;
+        //}
+
+        //if (!Keyboard.current.aKey.isPressed && !Keyboard.current.dKey.isPressed && _horizontal != 0)
+        //{
+        //    _horizontal = 0;
+        //}
+
 
         if (_horizontal == 0) return;
         _horizontal = -1 * Mathf.Sign(_horizontal);

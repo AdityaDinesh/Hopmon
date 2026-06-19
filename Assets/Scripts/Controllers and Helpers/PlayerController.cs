@@ -117,7 +117,7 @@ public class PlayerController : MonoBehaviour
         // PLayer is Moving
         if (_isMoving)
         {
-            if(CameraController.Instance.FreeLookCam.LookAt != null)
+            if(CameraController.Instance.FreeLookCam.LookAt != null && !CameraController.Instance.IsMoving)
             {
                 CameraController.Instance.SetLookAtParameter(null);
             }
@@ -281,6 +281,7 @@ public class PlayerController : MonoBehaviour
         {
             horizontal = VirtualJoystick.GetAxis("Horizontal", 0);
             vertical = VirtualJoystick.GetAxis("Vertical", 0);
+
         }
 
         if(!_canShoot)
@@ -303,8 +304,8 @@ public class PlayerController : MonoBehaviour
         }
 
         if (_isMoving) return;
-        
-        if (horizontal != 0)
+
+        if (horizontal != 0 && vertical == 0)
         {
             if (horizontal < 0)
             {
@@ -314,6 +315,7 @@ public class PlayerController : MonoBehaviour
             {
                 horizontal = 1f;
             }
+            vertical = 0f;
         }
         else
         {
@@ -325,6 +327,7 @@ public class PlayerController : MonoBehaviour
             {
                 vertical = 1f;
             }
+            horizontal = 0f;
         }
 
         Vector3 camForward = _cameraTransform.forward;
@@ -433,8 +436,10 @@ public class PlayerController : MonoBehaviour
     {
         //_isLevelEnding = false;
 
-        if(_isDead)
+        if(_isDead || LevelPrefabController.Instance.IsThisLastLevel())
         {
+            if (!_isDead) _isDead = true;
+
             UserInterfaceController.Instance.SetActiveUI(UserInterfaceController.UIState.MainMenu);
             GameplayController.Instance.SetGameState(GameplayController.GameState.Menu);
             return;

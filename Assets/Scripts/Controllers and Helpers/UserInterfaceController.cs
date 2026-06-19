@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Terresquall;
+using TMPro;
 using UnityEngine;
 
 [System.Serializable]
@@ -53,6 +54,10 @@ public class UserInterfaceController : MonoBehaviour
     [SerializeField] private GameObject _inputControlsParentGameObject;
     [SerializeField] private GameObject _pauseUIGameObject;
 
+    [SerializeField] private GameObject _debugPanelGameObject;
+    [SerializeField] private TextMeshProUGUI _debugText;
+    [SerializeField] private bool _displayDebugText;
+
     private UIState _previousUIState;
     private bool _isPaused;
 
@@ -77,6 +82,11 @@ public class UserInterfaceController : MonoBehaviour
         for (int i = 0; i < userInterfaceTypesList.Count; i++)
         {
             _userInterfaceDictionary.Add(userInterfaceTypesList[i].uIState, userInterfaceTypesList[i].UserInterface);
+        }
+
+        if(!_displayDebugText)
+        {
+            _debugPanelGameObject.SetActive(false);
         }
     }
 
@@ -213,6 +223,14 @@ public class UserInterfaceController : MonoBehaviour
         if (hide == false && !_inputControlsParentGameObject.activeInHierarchy)
         {
             _inputControlsParentGameObject.SetActive(true);
+        }
+    }
+
+    public void ShowDebugText(string text)
+    {
+        if(text != null && _debugText != null)
+        {
+            _debugText.text = text;
         }
     }
 }
