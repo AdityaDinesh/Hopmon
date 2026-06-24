@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: PoolPrefabs
+  m_EditorClassIdentifier: 
+  m_GroupName: PoolPrefabs
+  m_Data:
+    m_SerializedData: []
+  m_GUID: e25d514ce82d97644b0d046a6b374106
+  m_SerializeEntries:
+  - m_GUID: aee954284e4aca94e9b65aec6db528f5
+    m_Address: Canon Fireball
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0f0e3e34ea27243458d06bcfd0a486f0
+    m_Address: ExplosionPS
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4711cec9991c3124f9ad59f1106e47f2
+    m_Address: Fireball Collide PS
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: adf1339103d2b5c40943ea83bdeb9234
+    m_Address: Hopmon Fireball
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5379d3e2e98b3a643a93331cb450f4eb
+    m_Address: Pot Canon Fireball Trail PS
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2773576bcef08b242bb201d095e8ee39
+    m_Address: PotCanon Fireball
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5916a958966ecf44dadec6507530f766
+    m_Address: SfxAudioSource
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: d87ae2104e950f24ea74b34882c26340, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: b185a5dc2cdfaac4d9134a5e8f19ff54, type: 2}
+    - {fileID: 11400000, guid: af49c2a5d1930b644b2a26284cad0396, type: 2}

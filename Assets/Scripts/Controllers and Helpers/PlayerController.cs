@@ -74,6 +74,8 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log($"AWAKE_START: PlayerController {System.DateTime.Now:HH:mm:ss.fff}");
+
         // Check if an instance already exists
         if (Instance != null && Instance != this)
         {
@@ -97,6 +99,8 @@ public class PlayerController : MonoBehaviour
         _crystalViewList = new List<CrystalView>();
         _activeFlyingCrystalTransform = null;
         _originalMoveSpeed = _speed;
+
+        Debug.Log($"AWAKE_END: PlayerController {System.DateTime.Now:HH:mm:ss.fff}");
     }
 
     void Update()

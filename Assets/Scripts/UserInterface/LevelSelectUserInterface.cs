@@ -85,6 +85,7 @@ public class LevelSelectUserInterface : UserInterface
         currentLevel = 0;
         UpdateLevel();
         _levelPreviewGameObject.SetActive(true);
+        LevelPrefabController.Instance.PreloadAllLevels();
     }
 
     public override void Hide()

@@ -56,6 +56,8 @@ public class CameraController : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log($"AWAKE_START: CameraController {System.DateTime.Now:HH:mm:ss.fff}");
+
         // Check if an instance already exists
         if (Instance != null && Instance != this)
         {
@@ -69,6 +71,7 @@ public class CameraController : MonoBehaviour
             // Optional: keep the object alive across scene loads
             DontDestroyOnLoad(this.gameObject);
         }
+        Debug.Log($"AWAKE_END: CameraController {System.DateTime.Now:HH:mm:ss.fff}");
     }
 
     // Start is called before the first frame update

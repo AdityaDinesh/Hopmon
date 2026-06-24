@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class PoolController : MonoBehaviour
 {
@@ -10,40 +12,56 @@ public class PoolController : MonoBehaviour
     public class Pool
     {
         public string tag;
-        public GameObject prefab;
+        public AssetReferenceGameObject addressableRef;
         public int size;
     }
 
     public List<Pool> pools;
 
     private Dictionary<string, Queue<GameObject>> poolDictionary;
+    private Dictionary<string, List<AsyncOperationHandle<GameObject>>> instanceHandles;
+
+    public bool IsReady { get; private set; } = false;
 
 
     private void Awake()
     {
-        // Check if an instance already exists
         if (Instance != null && Instance != this)
         {
-            // If another instance exists, destroy this one
             Destroy(this.gameObject);
-        }
-        else
-        {
-            // If no instance exists, set this one as the instance
-            Instance = this;
-            // Optional: keep the object alive across scene loads
-            DontDestroyOnLoad(this.gameObject);
+            return;
         }
 
+        Instance = this;
+        DontDestroyOnLoad(this.gameObject);
+
         poolDictionary = new Dictionary<string, Queue<GameObject>>();
+        instanceHandles = new Dictionary<string, List<AsyncOperationHandle<GameObject>>>(); 
+
+        StartCoroutine(InitializePool());
+    }
+
+    public IEnumerator InitializePool()
+    {
+        IsReady = false;
 
         foreach (Pool pool in pools)
         {
             Queue<GameObject> objectPool = new Queue<GameObject>();
+            List<AsyncOperationHandle<GameObject>> handles = new List<AsyncOperationHandle<GameObject>>();
 
             for (int i = 0; i < pool.size; i++)
             {
-                GameObject obj = Instantiate(pool.prefab);
+                var instHandle = pool.addressableRef.InstantiateAsync();
+                yield return instHandle;
+
+                if (instHandle.Status != AsyncOperationStatus.Succeeded)
+                {
+                    Debug.LogError($"[Pool] Failed to instantiate for tag: {pool.tag}");
+                    continue;
+                }
+
+                GameObject obj = instHandle.Result;
 
                 PoolObject poolObj = obj.GetComponent<PoolObject>();
                 if (poolObj != null)
@@ -51,28 +69,48 @@ public class PoolController : MonoBehaviour
 
                 obj.SetActive(false);
                 objectPool.Enqueue(obj);
+                handles.Add(instHandle); // track the INSTANCE handle, not load handle
+
+                //if (i % 10 == 0)
+                //    yield return null;
             }
 
-            poolDictionary.Add(pool.tag, objectPool);
+            poolDictionary[pool.tag] = objectPool;
+            instanceHandles[pool.tag] = handles;
+            yield return null;
         }
+
+        IsReady = true;
+        Debug.Log("[Pool] All pools initialized.");
     }
 
     public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation)
     {
+        if (!IsReady)
+        {
+            Debug.LogWarning("[Pool] Pool not ready yet!");
+            return null;
+        }
+
         if (!poolDictionary.ContainsKey(tag))
         {
-            Debug.LogWarning("Pool with tag " + tag + " doesn't exist");
+            Debug.LogWarning($"[Pool] Tag '{tag}' doesn't exist.");
+            return null;
+        }
+
+        if (poolDictionary[tag].Count == 0)
+        {
+            Debug.LogWarning($"[Pool] Tag '{tag}' pool is empty!");
             return null;
         }
 
         GameObject objectToSpawn = poolDictionary[tag].Dequeue();
-
-        objectToSpawn.transform.position = position;
-        objectToSpawn.transform.rotation = rotation;
+        objectToSpawn.transform.SetPositionAndRotation(position, rotation);
         objectToSpawn.SetActive(true);
 
         PoolObject poolObject = objectToSpawn.GetComponent<PoolObject>();
-        poolObject.Setup();
+        if (poolObject != null)
+            poolObject.Setup();
 
         return objectToSpawn;
     }
@@ -81,5 +119,21 @@ public class PoolController : MonoBehaviour
     {
         obj.SetActive(false);
         poolDictionary[tag].Enqueue(obj);
+    }
+
+    private void OnDestroy()
+    {
+        foreach (var kvp in instanceHandles)
+        {
+            foreach (var handle in kvp.Value)
+            {
+                // Only release valid, succeeded handles
+                if (handle.IsValid() && handle.Status == AsyncOperationStatus.Succeeded)
+                    Addressables.Release(handle);
+            }
+        }
+
+        instanceHandles.Clear();
+        poolDictionary.Clear();
     }
 }

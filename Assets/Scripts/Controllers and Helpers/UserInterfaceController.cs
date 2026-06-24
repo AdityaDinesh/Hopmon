@@ -27,6 +27,8 @@ public class UserInterfaceController : MonoBehaviour
 
     [SerializeField] private List<UserInterfaceType> userInterfaceTypesList;
 
+    
+
     public MainMenuUserInterface CurrentMainMenuUserInterface
     {
         get { return mainMenuUserInterface; }
@@ -58,11 +60,23 @@ public class UserInterfaceController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _debugText;
     [SerializeField] private bool _displayDebugText;
 
+    [Header("Level Controller Data")]
+    [SerializeField] private TextMeshProUGUI _levelNumberText;
+    [SerializeField] private TextMeshProUGUI _crystalNumberText;
+
+    public Transform LevelLoadPosition
+    {
+        get { return _levelLoadPositionTransform; }
+    }
+    [SerializeField] private Transform _levelLoadPositionTransform;
+
     private UIState _previousUIState;
     private bool _isPaused;
 
     private void Awake()
     {
+        Debug.Log($"AWAKE_START: UIController {System.DateTime.Now:HH:mm:ss.fff}");
+
         // Check if an instance already exists
         if (Instance != null && Instance != this)
         {
@@ -88,6 +102,8 @@ public class UserInterfaceController : MonoBehaviour
         {
             _debugPanelGameObject.SetActive(false);
         }
+
+        Debug.Log($"AWAKE_END: UIController {System.DateTime.Now:HH:mm:ss.fff}");
     }
 
     // Start is called before the first frame update
@@ -101,7 +117,7 @@ public class UserInterfaceController : MonoBehaviour
     //// Update is called once per frame
     //void Update()
     //{
-        
+
     //}
 
     public void SetActiveUI(UIState uiState)
@@ -224,6 +240,17 @@ public class UserInterfaceController : MonoBehaviour
         {
             _inputControlsParentGameObject.SetActive(true);
         }
+    }
+
+    public void UpdateLevelUI(string text, bool isCrystalData = true)
+    {
+        if(isCrystalData)
+        {
+            _crystalNumberText.text = text;
+            return;
+        }
+
+        _levelNumberText.text = text;
     }
 
     public void ShowDebugText(string text)

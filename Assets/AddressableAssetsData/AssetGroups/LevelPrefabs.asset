@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: LevelPrefabs
+  m_EditorClassIdentifier: 
+  m_GroupName: LevelPrefabs
+  m_Data:
+    m_SerializedData: []
+  m_GUID: c457a2ef4410f9a47a772bef92188b99
+  m_SerializeEntries:
+  - m_GUID: eb915f373aca3074391d56e382fc00b3
+    m_Address: Level 1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 22d5ba501bb121c49b516225d97ed37f
+    m_Address: Level 2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83471a14c7b16b442925220954a3cd5a
+    m_Address: Level 3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b2865b0fd8706c4cb0f0588cba5a52d
+    m_Address: Level 4
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 57ee4912d03764442824352c690c3e32
+    m_Address: Level 5
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 81c7ddf4ae89e82488eaaf070be20d52
+    m_Address: Level 6
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f5505dbca0d59ec4dbda9fad692e5d4a
+    m_Address: Level 7
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: be7050a3e162219438e50b199133a3c0
+    m_Address: Level 8
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ab2f785d955e364193e3a0b1261b4fd
+    m_Address: Level 9
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 06f149fbd1b89fd42a76163a2490ac9a
+    m_Address: Level 10
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fcab6d034ba805d4d80c26a52b0b9809
+    m_Address: Tutorial Level
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: d87ae2104e950f24ea74b34882c26340, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 4f2e06fbac90e2f44a727288727bc559, type: 2}
+    - {fileID: 11400000, guid: 9ce7eafd12365a84f98d99c000f9ade2, type: 2}

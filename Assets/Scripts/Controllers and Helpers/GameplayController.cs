@@ -22,6 +22,8 @@ public class GameplayController : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log($"AWAKE_START: GameplayController {System.DateTime.Now:HH:mm:ss.fff}");
+
         // Check if an instance already exists
         if (Instance != null && Instance != this)
         {
@@ -35,6 +37,8 @@ public class GameplayController : MonoBehaviour
             // Optional: keep the object alive across scene loads
             DontDestroyOnLoad(this.gameObject);
         }
+
+        Debug.Log($"AWAKE_END: GameplayController {System.DateTime.Now:HH:mm:ss.fff}");
     }
 
     // Start is called before the first frame update

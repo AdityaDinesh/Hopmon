@@ -1,83 +1,123 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-
-/// <summary>
-/// Loads/Hides Level Prefab Data and also updates UI level elements
-/// </summary>
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class LevelPrefabController : MonoBehaviour
 {
     public static LevelPrefabController Instance;
 
-    [SerializeField] private TextMeshProUGUI _levelNumberText; 
-    [SerializeField] private TextMeshProUGUI _crystalNumberText;
-
+    
     [SerializeField] private LevelData _levelData;
-    [SerializeField] private GameObject[] _levelPrefabList;
-    [SerializeField] private Transform _levelLoadPositionTransform;
+    [SerializeField] private string[] _levelAddressableKeys; // e.g. "Level_01", "Level_02"
 
     private int _currentLevel;
     private GameObject _currentLevelGameObject;
 
-    public int TotalCrystals
-    {
-        get { return _totalCrystals; }
-    }
+    private Dictionary<int, GameObject> _cachedLevelPrefabs = new Dictionary<int, GameObject>();
+    private Dictionary<int, AsyncOperationHandle<GameObject>> _cachedHandles = new Dictionary<int, AsyncOperationHandle<GameObject>>();
+
+    public bool IsReady { get; private set; } = false;
+
+    public int TotalCrystals => _totalCrystals;
     private int _totalCrystals;
 
     private void Awake()
     {
-        // Check if an instance already exists
         if (Instance != null && Instance != this)
         {
-            // If another instance exists, destroy this one
             Destroy(this.gameObject);
+            return;
         }
-        else
-        {
-            // If no instance exists, set this one as the instance
-            Instance = this;
-            // Optional: keep the object alive across scene loads
-            DontDestroyOnLoad(this.gameObject);
-        }
+
+        Instance = this;
+        DontDestroyOnLoad(this.gameObject);
 
         _levelData.unlockedLevels = PlayerPrefs.GetInt("unlockedLevels");
-
         if (_levelData.unlockedLevels <= 0) _levelData.unlockedLevels = 1;
+    }
+
+    public IEnumerator PreloadAllLevels(System.Action<float> onProgress = null)
+    {
+        IsReady = false;
+
+        for (int i = 0; i < _levelAddressableKeys.Length; i++)
+        {
+            if (_cachedLevelPrefabs.ContainsKey(i))
+            {
+                onProgress?.Invoke((float)(i + 1) / _levelAddressableKeys.Length);
+                continue;
+            }
+
+            string key = _levelAddressableKeys[i];
+
+            if (string.IsNullOrEmpty(key))
+            {
+                Debug.LogError($"[Level] Key at index {i} is empty. Check Inspector.");
+                continue;
+            }
+
+            var handle = Addressables.LoadAssetAsync<GameObject>(key);
+            yield return handle;
+
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                _cachedLevelPrefabs[i] = handle.Result;
+                _cachedHandles[i] = handle;
+            }
+            else
+            {
+                Debug.LogError($"[Level] Failed to preload '{key}': {handle.OperationException}");
+            }
+
+            onProgress?.Invoke((float)(i + 1) / _levelAddressableKeys.Length);
+            yield return null;
+        }
+
+        IsReady = true;
+        Debug.Log("[Level] All levels preloaded.");
     }
 
     public void SetLevelData(int levelNumber)
     {
         _currentLevel = levelNumber;
-        _currentLevelGameObject = Instantiate(_levelPrefabList[_currentLevel], _levelLoadPositionTransform.position, _levelLoadPositionTransform.rotation);
-        LevelPrefabData levelPrefabData = _currentLevelGameObject.GetComponent<LevelPrefabData>();
 
-        if(levelPrefabData != null)
+        if (!_cachedLevelPrefabs.TryGetValue(_currentLevel, out GameObject prefab))
         {
-            levelPrefabData.LoadLevelData();
+            Debug.LogError($"[Level] Level {_currentLevel} not preloaded yet.");
+            return;
         }
+
+        _currentLevelGameObject = Instantiate(prefab, UserInterfaceController.Instance.LevelLoadPosition.position, UserInterfaceController.Instance.LevelLoadPosition.rotation);
+
+        LevelPrefabData levelPrefabData = _currentLevelGameObject.GetComponent<LevelPrefabData>();
+        if (levelPrefabData != null)
+            levelPrefabData.LoadLevelData();
     }
 
     public void LoadNextLevel()
     {
         _currentLevel++;
-        Destroy(_currentLevelGameObject);
+
+        if (_currentLevelGameObject != null)
+            Destroy(_currentLevelGameObject);
 
         if (_currentLevel >= _levelData.totalLevels) return;
 
-        _currentLevelGameObject = Instantiate(_levelPrefabList[_currentLevel], _levelLoadPositionTransform.position, _levelLoadPositionTransform.rotation);
-        LevelPrefabData levelPrefabData = _currentLevelGameObject.GetComponent<LevelPrefabData>();
-
-        if (levelPrefabData != null)
+        if (!_cachedLevelPrefabs.TryGetValue(_currentLevel, out GameObject prefab))
         {
-            levelPrefabData.LoadLevelData();
+            Debug.LogError($"[Level] Level {_currentLevel} not preloaded yet.");
+            return;
         }
 
-        // Increment unlocked levels in level data scriptable object, but also ensure it doesn't exceed total number of levels
+        _currentLevelGameObject = Instantiate(prefab, UserInterfaceController.Instance.LevelLoadPosition.position, UserInterfaceController.Instance.LevelLoadPosition.rotation);
 
-        if(_currentLevel >= _levelData.unlockedLevels)
+        LevelPrefabData levelPrefabData = _currentLevelGameObject.GetComponent<LevelPrefabData>();
+        if (levelPrefabData != null)
+            levelPrefabData.LoadLevelData();
+
+        if (_currentLevel >= _levelData.unlockedLevels)
         {
             _levelData.unlockedLevels++;
             PlayerPrefs.SetInt("unlockedLevels", _levelData.unlockedLevels);
@@ -85,32 +125,41 @@ public class LevelPrefabController : MonoBehaviour
         }
     }
 
+    public void HideCurrentLevel()
+    {
+        if (_currentLevelGameObject == null) return;
+        Destroy(_currentLevelGameObject);
+        _currentLevelGameObject = null;
+    }
+
     public void SetLevelUI(int crystalNumber)
     {
-        _levelNumberText.text = _currentLevel.ToString("00");
-        _crystalNumberText.text = crystalNumber.ToString("00");
+        UserInterfaceController.Instance.UpdateLevelUI(_currentLevel.ToString("00"), false);
+        UserInterfaceController.Instance.UpdateLevelUI(crystalNumber.ToString("00"));
         _totalCrystals = crystalNumber;
     }
 
     public void ReleaseCrystal()
     {
         _totalCrystals--;
-        _crystalNumberText.text = _totalCrystals.ToString("00");
+        UserInterfaceController.Instance.UpdateLevelUI(_totalCrystals.ToString("00"));
     }
 
     public bool IsThisLastLevel()
     {
         Debug.Log("Current Level : " + _currentLevel + ", Total Levels : " + _levelData.totalLevels);
-
-        if (_currentLevel >= (_levelData.totalLevels - 1)) return true;
-
-        return false;
+        return _currentLevel >= (_levelData.totalLevels - 1);
     }
 
-    public void HideCurrentLevel()
+    private void OnDestroy()
     {
-        if (_currentLevelGameObject == null) return;
+        foreach (var kvp in _cachedHandles)
+        {
+            if (kvp.Value.IsValid())
+                Addressables.Release(kvp.Value);
+        }
 
-        Destroy(_currentLevelGameObject);
+        _cachedHandles.Clear();
+        _cachedLevelPrefabs.Clear();
     }
 }
